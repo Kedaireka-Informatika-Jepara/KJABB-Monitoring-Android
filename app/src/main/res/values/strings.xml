@@ -1,0 +1,92 @@
+<resources>
+    <string name="app_name">Monitoring KJABB</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="settings">Settings</string>
+    <string name="statistics">Statistics</string>
+    <string name="dashboard_description">Recent data summary from sensors</string>
+    <string name="dissolved_oxygen">Dissolved Oxygen</string>
+    <string name="do_dummy" translatable="false">-</string>
+    <string name="water_temperature">Water Temperature</string>
+    <string name="last_update_dummy">Last Updated:</string>
+    <string name="title_statistics">Statistics</string>
+    <string name="statistic_description">Summary of data in a certain time period</string>
+    <string name="settings_description">Customize app settings</string>
+    <string name="statistics_download_message">Get an overall data recap in the form of .xlsx (excel)</string>
+    <string name="download">Download</string>
+    <string name="back_button">Back Button</string>
+    <string name="sensor_details">Sensor Details</string>
+    <string name="sensor_detail_description">Sensor data details and graphs</string>
+    <string name="card_title" translatable="false">Card Title</string>
+    <string name="value">Value</string>
+    <string name="parameter_icon">Parameter Icon</string>
+    <string name="current_threshold">Current Threshold</string>
+    <string name="threshold_dummy" translatable="false"> – </string>
+    <string name="download_records">Download Records</string>
+    <string name="upper_limit">Upper Limit</string>
+    <string name="lower_limit">Lower Limit</string>
+    <string name="save_as_xslx">Save as .xslx</string>
+    <string name="notification">Notification</string>
+    <string name="daily_notification">Daily Notification</string>
+    <string name="threshold_warning">Threshold Warning</string>
+    <string name="others">Others</string>
+    <string name="about_kjabb">About KJABB</string>
+    <string name="monitoring_web">Website Monitoring</string>
+    <string name="version">Version 1.0</string>
+    <string name="raindrops">Raindrops</string>
+    <string name="ammonia">Ammonia</string>
+    <string name="kjabb_desc_1" translatable="false">Keramba Jaring Apung Bulat Bertingkat (KJABB) dengan metode Integrated Multi-Trophic Aquaculture (IMTA) merupakan praktik budidaya dengan lebih dari satu spesies biota yang memiliki hubungan mutualistik secara ekologis sebagai sebagai satu rantai makanan pada area/sistem yang sama dalam waktu yang bersamaan. Budidaya sistem IMTA memungkinkan pembudidaya mendapatkan beberapa produk budidaya pada area yang sama tanpa menambah luasan area budidaya.</string>
+    <string name="kjabb_desc_2" translatable="false">Aplikasi KJABB-IMTA telah berhasil digunakan untuk budidaya ikan kerapu cantang terintegrasi dengan kakap putih, rumput laut, bintang laut, dan teripang di kawasan P. Menjangan Besar, Kep. Karimunjawa, Kabupaten Jepara. Selain produktivitas meningkat, aplikasi ini telah berhasil menekan potensi gangguan lingkungan, khususnya pengayaan organik dari aktivitas budidaya.</string>
+    <string name="kjabb_desc_3" translatable="false">Tujuan yang ingin dicapai dalam penelitian ini adalah untuk meningkatkan kapasitas produksi nasional dengan mengembangkan dan mengaplikasikan budidaya sistem IMTA pada KJABB terintegrasi biomonitoring untuk peningkatan produktivitas, kualitas produk, dan terciptanya lingkungan budidaya yang sehat dan berkelanjutan dan memberikan pengetahuan (transfer knowledge) berupa Teknologi Tepat Guna kepada masyarakat pembudidaya di kawasan Kep. Karimunjawa melalui diseminasi hasil penelitian dan pendampingan terhadap masyarakat pembudidaya/UMKM.</string>
+    <string name="data_saved">Data Saved</string>
+    <string name="saving_failed">Saving Failed</string>
+    <string name="storage_permission_granted">Storage permission granted</string>
+    <string name="storage_permission_denied">Storage permission denied</string>
+    <string name="permission_already_granted">Permission already granted</string>
+    <string name="data_not_change">Data Not Change</string>
+    <string name="data_not_valid">Data not valid</string>
+    <string name="failed">Failed</string>
+    <string name="threshold_warning_activated">Threshold Warning Activated</string>
+    <string name="threshold_warning_deactivated">Threshold Warning Deactivated</string>
+    <string name="daily_notification_activated">Daily Notification Activated</string>
+    <string name="daily_notification_deactivated">Daily Notification Deactivated</string>
+    <string name="show_records">Show Records</string>
+    <string name="displaying_data_within_a_certain_time_span">Displaying data within a certain time span</string>
+    <string name="records">Records</string>
+    <string name="sensor_records_detail">Sensor records detail</string>
+    <string name="average">Average</string>
+    <string name="daily_average">Daily Average</string>
+    <string name="dummy_date" translatable="false">22 January 2022 11.59 AM</string>
+    <string name="history">History</string>
+    <string name="today">Today</string>
+    <string name="_7_days">7 Days</string>
+    <string name="_31_days">31 days</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="max_min_dummy" translatable="false">Max: - | Min: -</string>
+    <string name="weekly_average">Weekly Average</string>
+    <string name="monthly_average">Monthly Average</string>
+    <string name="raindrops_sensor" translatable="false">Raindrops Sensor</string>
+    <string name="raindrops_sensor_description">Raindrops sensor can detect whether it is raining around the sensor or not. The data sent by this sensor is in the form of numbers from 0–4 with each number having the following meaning:</string>
+    <string name="_1" translatable="false">1</string>
+    <string name="_0" translatable="false">0</string>
+    <string name="tidak_hujan">Not Raining</string>
+    <string name="sensor_tidak_mendeteksi_adanya_hujan_pada_daerah_di_sekitar_sensor">The sensor does not detect rain in the area around the sensor</string>
+    <string name="noise" translatable="false">Noise</string>
+    <string name="sensor_mendeteksi_adanya_air_pada_sensor_tetapi_belum_dikategorikan_sebagai_hujan_sehingga_hanya_dianggap_sebagai_noise_tidak_hujan">The sensor detects the presence of water on the sensor but it has not been categorized as rain so it is only considered as noise / not raining</string>
+    <string name="_2" translatable="false">2</string>
+    <string name="gerimis">Light Rain</string>
+    <string name="sensor_mendeteksi_adanya_hujan_dengan_intensitas_rendah">The sensor detects the presence of low intensity rain on the sensor surface</string>
+    <string name="_3" translatable="false">3</string>
+    <string name="sedang">Moderate Rain</string>
+    <string name="sensor_mendeteksi_adanya_hujan_dengan_intensitas_sedang_pada_permukaan_sensor">The sensor detects the presence of moderate intensity rain on the sensor surface</string>
+    <string name="_4" translatable="false">4</string>
+    <string name="tinggi">Heavy Rain</string>
+    <string name="sensor_mendeteksi_adanya_hujan_dengan_intensitas_tinggi_pada_permukaan_sensor">The sensor detects the presence of high intensity rain on the sensor surface</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="daily_notification_message">See the current state of water quality</string>
+    <string name="threshold_notification_message">The sensor detects a value outside the safe limit</string>
+    <string name="status" translatable="false">Status:</string>
+    <string name="status_good">Status: Good</string>
+    <string name="status_bad">Status: Bad</string>
+</resources>
