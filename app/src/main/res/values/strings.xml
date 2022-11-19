@@ -89,4 +89,6 @@
     <string name="status" translatable="false">Status:</string>
     <string name="status_good">Status: Good</string>
     <string name="status_bad">Status: Bad</string>
+    <string name="Prediction">Prediction</string>
+    <string name="prediction_description">Predict future data based on historical data</string>
 </resources>
