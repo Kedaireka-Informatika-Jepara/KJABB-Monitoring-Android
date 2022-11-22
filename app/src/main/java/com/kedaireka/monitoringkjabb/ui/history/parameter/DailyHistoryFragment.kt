@@ -44,7 +44,7 @@ class DailyHistoryFragment : Fragment() {
 
         dailyHistoryViewModel.getSensorHistory(sensor)
 
-        dailyHistoryViewModel.avg.observe(viewLifecycleOwner, {
+        dailyHistoryViewModel.avg.observe(viewLifecycleOwner) {
 
             if (sensor.id == RAINDROPS_ID) {
                 binding.tvValue.text = getString(RAINDROPS_DICT[it.toInt()]!!)
@@ -52,26 +52,26 @@ class DailyHistoryFragment : Fragment() {
                 val value = "%.2f ${sensor.unit}".format(it)
                 binding.tvValue.text = value
             }
-        })
+        }
 
-        dailyHistoryViewModel.max.observe(viewLifecycleOwner, {
+        dailyHistoryViewModel.max.observe(viewLifecycleOwner) {
             max = it
             val value = "Max: $max | Min: $min"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        dailyHistoryViewModel.min.observe(viewLifecycleOwner, {
+        dailyHistoryViewModel.min.observe(viewLifecycleOwner) {
             min = it
             val value = "Max: $max | Min: $min"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        dailyHistoryViewModel.records.observe(viewLifecycleOwner, {
+        dailyHistoryViewModel.records.observe(viewLifecycleOwner) {
             list = it
             rvHistory.layoutManager = LinearLayoutManager(this.requireContext())
             val listHistoryAdapter = ListHistoryAdapter(list)
             rvHistory.adapter = listHistoryAdapter
-        })
+        }
 
         binding.tvTitle.text = sensor.name
 
