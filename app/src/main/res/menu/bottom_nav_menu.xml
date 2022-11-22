@@ -12,6 +12,11 @@
         android:title="@string/statistics" />
 
     <item
+        android:id="@+id/navigation_prediction"
+        android:icon="@drawable/ic_baseline_prediction_24"
+        android:title="Prediction" />
+
+    <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/settings" />
