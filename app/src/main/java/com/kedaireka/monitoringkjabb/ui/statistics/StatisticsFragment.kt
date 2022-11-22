@@ -14,7 +14,9 @@ import com.kedaireka.monitoringkjabb.databinding.FragmentStatisticsBinding
 private val parameterArray = arrayOf(
     "Ammonia",
     "Raindrops",
-    "Water Temperature"
+    "Water Temperature",
+    "pH Level",
+    "Dissolved Oxygen"
 )
 
 class StatisticsFragment : Fragment() {

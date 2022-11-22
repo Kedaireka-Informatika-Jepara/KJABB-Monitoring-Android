@@ -54,7 +54,8 @@
             android:layout_below="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:tabMode="scrollable">
 
             <!-- This section is already replaced by kotlin logic -->
             <com.google.android.material.tabs.TabItem
@@ -71,6 +72,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/water_temperature" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="pH Level" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dissolved Oxygen" />
 
 
         </com.google.android.material.tabs.TabLayout>
