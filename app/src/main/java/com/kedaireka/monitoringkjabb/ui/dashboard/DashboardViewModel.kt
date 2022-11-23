@@ -95,6 +95,30 @@ class DashboardViewModel : ViewModel() {
 
             db.child("sensors/raindrops/records/${timeInMillis / 1000}").setValue(data)
         }
+
+    }
+    private fun createDummyRecordsNewSensors() {
+        // pH Level
+        for (i in 1..1100) {
+            val timeInMillis = Date().time - (1800000 * i)
+            val db = DATABASE_REFERENCE
+            val data = mutableMapOf<String, Any>()
+            data["created_at"] = timeInMillis / 1000
+            data["value"] = (Random.nextDouble(5.00, 9.00) * 100).roundToInt() / 100.0
+
+            db.child("sensors/ph_level/records/${timeInMillis / 1000}").setValue(data)
+        }
+
+        // Dissolved Oxygen
+        for (i in 1..1100) {
+            val timeInMillis = Date().time - (1800000 * i)
+            val db = DATABASE_REFERENCE
+            val data = mutableMapOf<String, Any>()
+            data["created_at"] = timeInMillis / 1000
+            data["value"] = (Random.nextDouble(0.02, 0.2) * 100).roundToInt() / 100.0
+
+            db.child("sensors/dissolved_oxygen/records/${timeInMillis / 1000}").setValue(data)
+        }
     }
 
 }
