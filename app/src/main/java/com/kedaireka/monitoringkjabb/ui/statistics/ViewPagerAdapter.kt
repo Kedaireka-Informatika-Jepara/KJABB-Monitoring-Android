@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.kedaireka.monitoringkjabb.ui.statistics.parameter.AmmoniaFragment
+import com.kedaireka.monitoringkjabb.ui.statistics.parameter.PhLevelsFragment
 import com.kedaireka.monitoringkjabb.ui.statistics.parameter.RaindropsFragment
 import com.kedaireka.monitoringkjabb.ui.statistics.parameter.WaterTemperatureFragment
 
@@ -21,7 +22,7 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         when (position) {
             0 -> return AmmoniaFragment()
             1 -> return RaindropsFragment()
-            2 -> return AmmoniaFragment()
+            2 -> return PhLevelsFragment()
             3 -> return RaindropsFragment()
         }
 
