@@ -4,10 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.AmmoniaFragment
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.PhLevelsFragment
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.RaindropsFragment
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.WaterTemperatureFragment
+import com.kedaireka.monitoringkjabb.ui.statistics.parameter.*
 
 
 private const val NUM_TABS = 5
@@ -22,10 +19,10 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         when (position) {
             0 -> return AmmoniaFragment()
             1 -> return RaindropsFragment()
-            2 -> return PhLevelsFragment()
-            3 -> return RaindropsFragment()
+            2 -> return WaterTemperatureFragment()
+            3 -> return PhLevelsFragment()
         }
 
-        return WaterTemperatureFragment()
+        return DissolvedFragment()
     }
 }

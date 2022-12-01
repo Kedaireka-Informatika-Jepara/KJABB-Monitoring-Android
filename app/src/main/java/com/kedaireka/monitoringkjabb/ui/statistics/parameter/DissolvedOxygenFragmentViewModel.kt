@@ -8,11 +8,11 @@ import com.google.firebase.Timestamp
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.kedaireka.monitoringkjabb.model.Sensor
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
+import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PhLevelsFragmentViewModel : ViewModel() {
+class DissolvedOxygenFragmentViewModel : ViewModel() {
     private val _records = MutableLiveData<ArrayList<Sensor>>()
     val records: LiveData<ArrayList<Sensor>> = _records
 
@@ -37,7 +37,7 @@ class PhLevelsFragmentViewModel : ViewModel() {
     fun getDORecord(sensor: Sensor) {
         _isLoading.postValue(true)
 
-        val dbRef = DATABASE_REFERENCE
+        val dbRef = FirebaseDatabase.DATABASE_REFERENCE
         dbRef.child("sensors/${sensor.id}/records").orderByKey().limitToLast(10).get()
             .addOnSuccessListener { result ->
                 val records = arrayListOf<Sensor>()
@@ -114,7 +114,7 @@ class PhLevelsFragmentViewModel : ViewModel() {
                         records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
                     } catch (e: Exception) {
                         Log.d(
-                            PhLevelsFragmentViewModel::class.java.simpleName,
+                            AmmoniaFragmentViewModel::class.java.simpleName,
                             "getSensorRecordInRange: ${e.message.toString()}"
                         )
                     }
@@ -127,7 +127,7 @@ class PhLevelsFragmentViewModel : ViewModel() {
     }
 
     fun getThresholdsData(sensor: Sensor) {
-        val dbRef = DATABASE_REFERENCE
+        val dbRef = FirebaseDatabase.DATABASE_REFERENCE
         dbRef.child("sensors/${sensor.id}/thresholds").get().addOnSuccessListener { result ->
             val dataThreshold = mapOf(
                 "upper" to result.child("upper").value.toString(),
@@ -139,4 +139,5 @@ class PhLevelsFragmentViewModel : ViewModel() {
             it.printStackTrace()
         }
     }
+
 }

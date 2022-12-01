@@ -23,19 +23,21 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.R
 import com.kedaireka.monitoringkjabb.databinding.FragmentPhLevelsBinding
 import com.kedaireka.monitoringkjabb.model.Sensor
-import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
 import com.kedaireka.monitoringkjabb.utils.ExcelUtils
-import java.util.Date
+import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
 
-class PhLevelsFragment : Fragment() {
+class DissolvedFragment : Fragment() {
     private lateinit var phLevelFragmentViewModel: PhLevelsFragmentViewModel
     private lateinit var recordsInRange: ArrayList<Sensor>
+
 
     private var _binding: FragmentPhLevelsBinding? = null
     private val binding get() = _binding!!
@@ -186,77 +188,77 @@ class PhLevelsFragment : Fragment() {
     }
 
 
-        private fun getLatestSensor(): Sensor {
-            val sensor: Sensor
+    private fun getLatestSensor(): Sensor {
+        val sensor: Sensor
 
-            val id = "ph_level"
-            val name = "pH Level"
-            val value = "6.3"
-            val unit = ""
-            val createdAt = Timestamp(Date())
-            val iconUrl = "url"
+        val id = "dissolved_oxygen"
+        val name = "Dissolved Oxygen"
+        val value = "0.6"
+        val unit = ""
+        val createdAt = Timestamp(Date())
+        val iconUrl = "url"
 
-            sensor = Sensor(id, name, value, unit, createdAt, iconUrl)
-            return sensor
+        sensor = Sensor(id, name, value, unit, createdAt, iconUrl)
+        return sensor
+    }
+
+    private fun setDOLineChart(lineChart: LineChart, records: ArrayList<Sensor>) {
+
+        val xValue = ArrayList<String>()
+        val lineEntry = ArrayList<Entry>()
+        val size = records.size
+
+        for (i in 0 until size) {
+            val df = DateFormat.format("ha", records[size - i - 1].created_at.toDate())
+
+            xValue.add(df.toString())
+            lineEntry.add(Entry(i.toFloat(), records[size - i - 1].value.toFloat()))
         }
 
-        private fun setDOLineChart(lineChart: LineChart, records: ArrayList<Sensor>) {
-
-            val xValue = ArrayList<String>()
-            val lineEntry = ArrayList<Entry>()
-            val size = records.size
-
-            for (i in 0 until size) {
-                val df = DateFormat.format("ha", records[size - i - 1].created_at.toDate())
-
-                xValue.add(df.toString())
-                lineEntry.add(Entry(i.toFloat(), records[size - i - 1].value.toFloat()))
-            }
-
-            val lineDataSet = LineDataSet(lineEntry, records[0].name)
-            lineDataSet.circleColors =
-                mutableListOf(
-                    ContextCompat.getColor(
-                        this.requireContext().applicationContext,
-                        R.color.grey_light
-                    )
+        val lineDataSet = LineDataSet(lineEntry, records[0].name)
+        lineDataSet.circleColors =
+            mutableListOf(
+                ContextCompat.getColor(
+                    this.requireContext().applicationContext,
+                    R.color.grey_light
                 )
-            lineDataSet.color = resources.getColor(R.color.blue_primary)
+            )
+        lineDataSet.color = resources.getColor(R.color.blue_primary)
 
-            val xAxis = lineChart.xAxis
-            xAxis.position = XAxis.XAxisPosition.BOTTOM
-            xAxis.setLabelCount(xValue.size, true)
-            xAxis.valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    return xValue[value.toInt()]
-                }
+        val xAxis = lineChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setLabelCount(xValue.size, true)
+        xAxis.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return xValue[value.toInt()]
             }
-
-            val data = LineData(lineDataSet)
-            lineChart.data = data
-            lineChart.setScaleEnabled(false)
-
         }
 
+        val data = LineData(lineDataSet)
+        lineChart.data = data
+        lineChart.setScaleEnabled(false)
 
-        private fun checkPermission(permission: String, requestCode: Int) {
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    permission
-                ) == PackageManager.PERMISSION_DENIED
-            ) {
-                // Requesting permission
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(permission),
-                    requestCode
-                )
-            } else {
-                Toast.makeText(
-                    requireActivity(),
-                    getString(R.string.permission_already_granted),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    }
+
+
+    private fun checkPermission(permission: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                permission
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            // Requesting permission
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(permission),
+                requestCode
+            )
+        } else {
+            Toast.makeText(
+                requireActivity(),
+                getString(R.string.permission_already_granted),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
+}
