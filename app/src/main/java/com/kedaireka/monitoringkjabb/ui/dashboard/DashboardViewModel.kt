@@ -23,6 +23,7 @@ class DashboardViewModel : ViewModel() {
 
     init {
 //        createDummyRecords()
+//        createDummyRecordsNewSensors()
         getSensorsData()
     }
 
