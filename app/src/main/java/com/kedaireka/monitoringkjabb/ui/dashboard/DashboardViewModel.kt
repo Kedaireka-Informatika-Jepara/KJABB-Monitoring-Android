@@ -46,6 +46,7 @@ class DashboardViewModel : ViewModel() {
                         .child("created_at").value.toString()
                 val urlIcon = sensor.child("data/url_icon").value.toString()
 
+//                Konversi millisecond to Date
                 val createdAtTimestamp = Timestamp(Date(createdAt.toLong() * 1000))
                 sensorData.add(Sensor(id, name, value, unit, createdAtTimestamp, urlIcon))
 
@@ -77,7 +78,7 @@ class DashboardViewModel : ViewModel() {
 
         // Ammonia
         for (i in 1..1100) {
-            val timeInMillis = Date().time - (1800000 * i)
+            val timeInMillis = Date().time - (1_800_000 * i)
             val db = DATABASE_REFERENCE
             val data = mutableMapOf<String, Any>()
             data["created_at"] = timeInMillis / 1000
