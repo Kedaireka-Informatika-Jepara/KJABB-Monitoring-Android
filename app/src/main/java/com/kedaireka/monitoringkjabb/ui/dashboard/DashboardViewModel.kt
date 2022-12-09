@@ -6,7 +6,13 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.PostResponse
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -21,6 +27,8 @@ class DashboardViewModel : ViewModel() {
     private val _thresholdData = MutableLiveData<ArrayList<Map<String, Double>>>()
     val thresholdData = _thresholdData
 
+//    val MYSQLDATABASE = MySQLDatabase.fetchData().start()
+
     init {
 //        createDummyRecords()
 //        createDummyRecordsNewSensors()
@@ -29,13 +37,38 @@ class DashboardViewModel : ViewModel() {
 
     private fun getSensorsData() {
         _isLoading.postValue(true)
+        val sensorData = arrayListOf<Sensor>()
+        val thresholdData = arrayListOf<Map<String, Double>>()
+
+        val mySqlDatabase = ArrayList<PostResponse>()
+        RetrofitClient.instance.getPosts().enqueue(object: Callback<ArrayList<PostResponse>>{
+            override fun onResponse(
+                call: Call<ArrayList<PostResponse>>,
+                response: Response<ArrayList<PostResponse>>
+            ) {
+                response.body()?.let { mySqlDatabase.addAll(it) }
+                print(mySqlDatabase)
+            }
+
+            override fun onFailure(call: Call<ArrayList<PostResponse>>, t: Throwable) {
+
+            }
+        })
 
         val refRealtimeDatabase = DATABASE_REFERENCE
         refRealtimeDatabase.keepSynced(true)
         refRealtimeDatabase.child("sensors").get().addOnSuccessListener { result ->
-            val sensorData = arrayListOf<Sensor>()
-            val thresholdData = arrayListOf<Map<String, Double>>()
+
             for (sensor in result.children) {
+//                val id_sql = mySqlDatabase[0].sensor[0].id
+//                val name_sql = mySqlDatabase[0].sensor[0].relay
+//                val value_sql = 5
+//                val unit_sql = ""
+//                val created_sql = Timestamp(Date(mySqlDatabase[0].sensor[0].tanggal))
+//                val url_icon = ""
+//                sensorData.add(Sensor("1","sensor","1","s", Timestamp(Date(10000)),""))
+//                thresholdData.add(hashMapOf("upper" to value_sql.toDouble()-1, "lower" to value_sql.toDouble()+1))
+
                 val id = sensor.key!!
                 val name = sensor.child("data/name").value.toString()
                 val value =

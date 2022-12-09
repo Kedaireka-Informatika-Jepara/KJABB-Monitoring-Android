@@ -9,16 +9,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kedaireka.monitoringkjabb.R
 import com.kedaireka.monitoringkjabb.databinding.ActivityMainBinding
 
+
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        print("Hello")
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
