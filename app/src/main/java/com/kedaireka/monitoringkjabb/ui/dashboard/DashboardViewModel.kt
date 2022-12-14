@@ -47,7 +47,7 @@ class DashboardViewModel : ViewModel() {
                 response: Response<ArrayList<PostResponse>>
             ) {
                 response.body()?.let { mySqlDatabase.addAll(it) }
-                print(mySqlDatabase)
+
             }
 
             override fun onFailure(call: Call<ArrayList<PostResponse>>, t: Throwable) {
@@ -60,14 +60,14 @@ class DashboardViewModel : ViewModel() {
         refRealtimeDatabase.child("sensors").get().addOnSuccessListener { result ->
 
             for (sensor in result.children) {
-//                val id_sql = mySqlDatabase[0].sensor[0].id
-//                val name_sql = mySqlDatabase[0].sensor[0].relay
-//                val value_sql = 5
-//                val unit_sql = ""
-//                val created_sql = Timestamp(Date(mySqlDatabase[0].sensor[0].tanggal))
-//                val url_icon = ""
-//                sensorData.add(Sensor("1","sensor","1","s", Timestamp(Date(10000)),""))
-//                thresholdData.add(hashMapOf("upper" to value_sql.toDouble()-1, "lower" to value_sql.toDouble()+1))
+                val id_sql = mySqlDatabase[0].sensor[0].id
+                val name_sql = mySqlDatabase[0].sensor[0].relay
+                val value_sql = 5
+                val unit_sql = ""
+                val created_sql = Timestamp(Date(mySqlDatabase[0].sensor[0].tanggal))
+                val url_icon = ""
+                sensorData.add(Sensor("1","sensor","1","s", Timestamp(Date(10000)),""))
+                thresholdData.add(hashMapOf("upper" to value_sql.toDouble()-1, "lower" to value_sql.toDouble()+1))
 
                 val id = sensor.key!!
                 val name = sensor.child("data/name").value.toString()

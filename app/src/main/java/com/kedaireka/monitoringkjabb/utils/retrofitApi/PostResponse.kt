@@ -16,8 +16,6 @@ data class SensorResponse(
 )
 
 data class PostResponse(
-    val sensor: ArrayList<SensorResponse>,
-    val graph: ArrayList<SensorResponse>,
-    val data: ArrayList<SensorResponse>,
+    val sensor: ArrayList<SensorResponse>
 
 )
