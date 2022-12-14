@@ -50,7 +50,7 @@ class PredictionViewModel : ViewModel() {
                 var lastDate = result.children.last().child("created_at").value.toString().toLong()
                 var lastValue = result.children.last().child("value").value.toString().toDouble()
                 var firstValue = result.children.first().child("value").value.toString().toDouble()
-                val growthRate = (lastValue - firstValue) / firstValue
+                val growthRate = 1 + (lastValue - firstValue) / firstValue
 
 
                 for (document in result.children) {
@@ -102,6 +102,4 @@ class PredictionViewModel : ViewModel() {
             }
             .addOnFailureListener { it.printStackTrace() }
     }
-    }
-
 }

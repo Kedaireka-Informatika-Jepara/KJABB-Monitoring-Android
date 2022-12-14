@@ -44,12 +44,18 @@ class AmmoniaFragmentViewModel : ViewModel() {
                 var min = Double.MAX_VALUE
                 var max = Double.MIN_VALUE
                 var counter = 0.0
+                var lastDate = result.children.last().child("created_at").value.toString().toLong()
+                var lastValue = result.children.last().child("value").value.toString().toDouble()
+                var firstValue = result.children.first().child("value").value.toString().toDouble()
+                val growthRate = 1 + (lastValue - firstValue) / firstValue
 
                 for (document in result.children) {
                     try {
                         val id = sensor.id
                         val name = sensor.name
-                        val value = document.child("value").value.toString()
+                        val value = (lastValue*growthRate).toString()
+                        lastValue = value.toDouble()
+//                        val value = document.child("value").value.toString()
                         val unit = sensor.unit
                         val createdAt =
                             Timestamp(
