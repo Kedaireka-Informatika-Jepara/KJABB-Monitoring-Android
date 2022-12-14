@@ -47,14 +47,17 @@ class PredictionViewModel : ViewModel() {
                 var min = Double.MAX_VALUE
                 var max = Double.MIN_VALUE
                 var counter = 0.0
-                var last = Double result.child("created_at").value.toString().toLong() * 1000
+                var lastDate = result.children.last().child("created_at").value.toString().toLong()
+                var lastValue = result.children.last().child("value").value.toString().toDouble()
+                var firstValue = result.children.first().child("value").value.toString().toDouble()
+                val growthRate = (lastValue - firstValue) / firstValue
 
 
                 for (document in result.children) {
                     try {
                         val id = sensor.id
                         val name = sensor.name
-                        val value = document.child("value").value.toString()
+                        val value = (document.child("value").value.toString().toDouble()*growthRate).toString()
                         val unit = sensor.unit
                         val createdAt =
                             Timestamp(
