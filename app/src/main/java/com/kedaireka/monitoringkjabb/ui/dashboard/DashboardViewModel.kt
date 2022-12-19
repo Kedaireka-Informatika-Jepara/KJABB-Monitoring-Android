@@ -38,25 +38,34 @@ class DashboardViewModel : ViewModel() {
         val graphData = getDataApi()
 
 
-
         val refRealtimeDatabase = DATABASE_REFERENCE
         refRealtimeDatabase.keepSynced(true)
-        for (data in graphData){
 
-        }
+
+
+
         refRealtimeDatabase.child("sensors").get().addOnSuccessListener { result ->
 
-            val sensorDataId = graphData[0].id
-            val sensorDataName = graphData[0].amonia
+            val sensorDataId = graphData.last().id
+            val sensorDataName : Array<String> = arrayOf("Suhu", "Ammonia", "Curah Hujan", "pH", "Dissolved Oxygen", "Turbidity")
+            val sensorDataUnit : Array<String> = arrayOf("°C", "mg/l", "", "pH", "mg/l", "NTU")
+            val sensorDataTresholdUpper : Array<Double> = arrayOf(2.0, 3.0, 4.0, 5.0, 6.0)
+            val sensorDataTresholdLower : Array<Double> = arrayOf(1.0, 2.0, 3.0, 4.0, 5.0)
+
+
             val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//            val sensorDataDate = inputFormat.parse(graphData[0].tanggal + " " + graphData[0].waktu).time
-//            val sensorDataCreatedAt = Timestamp(Date(sensorDataDate.time))
+            val sensorDataDate = inputFormat.parse(graphData.last().tanggal + " " + graphData.last().waktu)
+            val sensorDataCreatedAt = Timestamp(Date(sensorDataDate.time))
+
+            for (i in 0..sensorDataName.size){
+
+            }
+
             val sensorDataIcon = "https://firebasestorage.googleapis.com/v0/b/monitoring-kjabb.appspot.com/o/icons%2FThermometer-icon.png?alt=media&token=aa04b652-2b50-422a-8c66-4c7f7f066fd1"
-            sensorData.add(Sensor(sensorDataId, sensorDataName, sensorDataName, "mlg", Timestamp(Date(10)), sensorDataIcon))
+            sensorData.add(Sensor(sensorDataId, sensorDataName, sensorDataName, "mlg", Timestamp(Date(sensorDataDate.time)), sensorDataIcon))
             var up : Double = 1.0
             var down : Double = 2.0
             thresholdData.add(hashMapOf("upper" to up, "lower" to down))
-
 
             for (sensor in result.children) {
 
