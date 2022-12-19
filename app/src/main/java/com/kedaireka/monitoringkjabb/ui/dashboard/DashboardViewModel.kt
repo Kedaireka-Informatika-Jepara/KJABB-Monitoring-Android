@@ -6,11 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
-import com.kedaireka.monitoringkjabb.utils.retrofitApi.PostResponse
-import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.getDataApi
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
@@ -27,8 +24,6 @@ class DashboardViewModel : ViewModel() {
     private val _thresholdData = MutableLiveData<ArrayList<Map<String, Double>>>()
     val thresholdData = _thresholdData
 
-//    val MYSQLDATABASE = MySQLDatabase.fetchData().start()
-
     init {
 //        createDummyRecords()
 //        createDummyRecordsNewSensors()
@@ -40,34 +35,30 @@ class DashboardViewModel : ViewModel() {
         val sensorData = arrayListOf<Sensor>()
         val thresholdData = arrayListOf<Map<String, Double>>()
 
-        val mySqlDatabase = ArrayList<PostResponse>()
-        RetrofitClient.instance.getPosts().enqueue(object: Callback<ArrayList<PostResponse>>{
-            override fun onResponse(
-                call: Call<ArrayList<PostResponse>>,
-                response: Response<ArrayList<PostResponse>>
-            ) {
-                response.body()?.let { mySqlDatabase.addAll(it) }
+        val graphData = getDataApi()
 
-            }
 
-            override fun onFailure(call: Call<ArrayList<PostResponse>>, t: Throwable) {
-
-            }
-        })
 
         val refRealtimeDatabase = DATABASE_REFERENCE
         refRealtimeDatabase.keepSynced(true)
+        for (data in graphData){
+
+        }
         refRealtimeDatabase.child("sensors").get().addOnSuccessListener { result ->
 
+            val sensorDataId = graphData[0].id
+            val sensorDataName = graphData[0].amonia
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//            val sensorDataDate = inputFormat.parse(graphData[0].tanggal + " " + graphData[0].waktu).time
+//            val sensorDataCreatedAt = Timestamp(Date(sensorDataDate.time))
+            val sensorDataIcon = "https://firebasestorage.googleapis.com/v0/b/monitoring-kjabb.appspot.com/o/icons%2FThermometer-icon.png?alt=media&token=aa04b652-2b50-422a-8c66-4c7f7f066fd1"
+            sensorData.add(Sensor(sensorDataId, sensorDataName, sensorDataName, "mlg", Timestamp(Date(10)), sensorDataIcon))
+            var up : Double = 1.0
+            var down : Double = 2.0
+            thresholdData.add(hashMapOf("upper" to up, "lower" to down))
+
+
             for (sensor in result.children) {
-                val id_sql = mySqlDatabase[0].sensor[0].id
-                val name_sql = mySqlDatabase[0].sensor[0].relay
-                val value_sql = 5
-                val unit_sql = ""
-                val created_sql = Timestamp(Date(mySqlDatabase[0].sensor[0].tanggal))
-                val url_icon = ""
-                sensorData.add(Sensor("1","sensor","1","s", Timestamp(Date(10000)),""))
-                thresholdData.add(hashMapOf("upper" to value_sql.toDouble()-1, "lower" to value_sql.toDouble()+1))
 
                 val id = sensor.key!!
                 val name = sensor.child("data/name").value.toString()

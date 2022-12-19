@@ -1,13 +1,22 @@
 package com.kedaireka.monitoringkjabb.model
 
-class DataApi (
-    var id: String,
-    var tanggal: String,
-    var suhu: String,
-    var amonia: String,
-    var curah_hujan: String,
-    var ph: String,
-    var dissolved_oxygen: String,
-    var relay: String,
-    var waktu: String
-        )
+import com.google.gson.annotations.SerializedName
+
+data class SensorData(
+    val id: String,
+    val tanggal: String,
+    val suhu: String,
+    val amonia: String,
+    val curah_hujan: String,
+    val ph: String,
+    @SerializedName("do")
+    val dissolved_oxygen: String,
+    val turbidity: String,
+    val waktu: String
+)
+
+data class GraphData(
+    val sensor: List<SensorData>,
+    val graph: List<SensorData>,
+    val data: List<SensorData>
+)
