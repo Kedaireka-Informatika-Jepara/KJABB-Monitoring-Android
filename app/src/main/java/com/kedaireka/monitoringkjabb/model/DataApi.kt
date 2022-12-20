@@ -2,6 +2,14 @@ package com.kedaireka.monitoringkjabb.model
 
 import com.google.gson.annotations.SerializedName
 
+data class SensorModel(
+    val id_sensor: String,
+    val nama_sensor: String,
+    val batas_bawah: String,
+    val batas_atas: String,
+    val url: String
+)
+
 data class SensorData(
     val id: String,
     val tanggal: String,

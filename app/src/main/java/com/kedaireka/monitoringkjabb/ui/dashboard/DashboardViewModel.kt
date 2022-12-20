@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.model.Sensor
+import com.kedaireka.monitoringkjabb.model.SensorData
+import com.kedaireka.monitoringkjabb.model.SensorModel
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.getDataApi
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.getSensorApi
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -35,37 +38,36 @@ class DashboardViewModel : ViewModel() {
         val sensorData = arrayListOf<Sensor>()
         val thresholdData = arrayListOf<Map<String, Double>>()
 
-        val graphData = getDataApi()
-
+        val graphData : ArrayList<SensorData> = getDataApi()
+        val sensorModel : ArrayList<SensorModel> = getSensorApi()
 
         val refRealtimeDatabase = DATABASE_REFERENCE
         refRealtimeDatabase.keepSynced(true)
 
-
-
-
         refRealtimeDatabase.child("sensors").get().addOnSuccessListener { result ->
+            val sensorDataValue : Array<Double> = arrayOf(
+                graphData.last().turbidity.toDouble(),
+                graphData.last().amonia.toDouble(),
+                graphData.last().suhu.toDouble(),
+                graphData.last().ph.toDouble(),
+                graphData.last().dissolved_oxygen.toDouble(),
+                graphData.last().curah_hujan.toDouble(),)
 
-            val sensorDataId = graphData.last().id
-            val sensorDataName : Array<String> = arrayOf("Suhu", "Ammonia", "Curah Hujan", "pH", "Dissolved Oxygen", "Turbidity")
             val sensorDataUnit : Array<String> = arrayOf("°C", "mg/l", "", "pH", "mg/l", "NTU")
-            val sensorDataTresholdUpper : Array<Double> = arrayOf(2.0, 3.0, 4.0, 5.0, 6.0)
-            val sensorDataTresholdLower : Array<Double> = arrayOf(1.0, 2.0, 3.0, 4.0, 5.0)
-
 
             val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            val sensorDataDate = inputFormat.parse(graphData.last().tanggal + " " + graphData.last().waktu)
-            val sensorDataCreatedAt = Timestamp(Date(sensorDataDate.time))
-
-            for (i in 0..sensorDataName.size){
-
+            val sensorDataDate = Timestamp(Date(inputFormat.parse(graphData.last().tanggal + " " + graphData.last().waktu).time))
+            for (i in 0 until 6){
+                sensorData.add(Sensor(
+                    sensorModel[i].id_sensor,
+                    sensorModel[i].nama_sensor,
+                    sensorDataValue[i].toString(),
+                    sensorDataUnit[i],
+                    sensorDataDate,
+                    "https://firebasestorage.googleapis.com/v0/b/monitoring-kjabb.appspot.com/o/icons%2FThermometer-icon.png?alt=media&token=aa04b652-2b50-422a-8c66-4c7f7f066fd1"))
+                    thresholdData.add(hashMapOf("upper" to sensorModel[i].batas_atas.toDouble(),
+                        "lower" to sensorModel[i].batas_bawah.toDouble()))
             }
-
-            val sensorDataIcon = "https://firebasestorage.googleapis.com/v0/b/monitoring-kjabb.appspot.com/o/icons%2FThermometer-icon.png?alt=media&token=aa04b652-2b50-422a-8c66-4c7f7f066fd1"
-            sensorData.add(Sensor(sensorDataId, sensorDataName, sensorDataName, "mlg", Timestamp(Date(sensorDataDate.time)), sensorDataIcon))
-            var up : Double = 1.0
-            var down : Double = 2.0
-            thresholdData.add(hashMapOf("upper" to up, "lower" to down))
 
             for (sensor in result.children) {
 
@@ -81,12 +83,12 @@ class DashboardViewModel : ViewModel() {
 
 //                Konversi millisecond to Date
                 val createdAtTimestamp = Timestamp(Date(createdAt.toLong() * 1000))
-                sensorData.add(Sensor(id, name, value, unit, createdAtTimestamp, urlIcon))
+//                sensorData.add(Sensor(id, name, value, unit, createdAtTimestamp, urlIcon))
 
                 val upper = sensor.child("thresholds/upper").value.toString().toDouble()
                 val lower = sensor.child("thresholds/lower").value.toString().toDouble()
 
-                thresholdData.add(hashMapOf("upper" to upper, "lower" to lower))
+//                thresholdData.add(hashMapOf("upper" to upper, "lower" to lower))
             }
 
             _thresholdData.postValue(thresholdData)

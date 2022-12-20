@@ -2,6 +2,7 @@ package com.kedaireka.monitoringkjabb.utils.retrofitApi
 
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.SensorData
+import com.kedaireka.monitoringkjabb.model.SensorModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,6 +14,11 @@ import retrofit2.http.GET
 interface Api {
     @GET("data")
     fun getPosts(): retrofit2.Call<GraphData>
+}
+
+interface ApiSensor {
+    @GET("data/threshold")
+    fun getPosts(): retrofit2.Call<ArrayList<SensorModel>>
 }
 
 object RetrofitClient {
@@ -28,6 +34,19 @@ object RetrofitClient {
     }
 }
 
+object RetrofitClientSensor {
+    private const val BASE_URL = "https://monitoring.cemebsa.com/"
+
+    val instance: ApiSensor by lazy {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        retrofit.create(ApiSensor::class.java)
+    }
+}
+
 fun getDataApi() : ArrayList<SensorData> {
     var dataResponse = ArrayList<SensorData>()
     RetrofitClient.instance.getPosts().enqueue(object : Callback<GraphData>{
@@ -39,6 +58,22 @@ fun getDataApi() : ArrayList<SensorData> {
         }
 
         override fun onFailure(call: Call<GraphData>, t: Throwable) {
+        }
+    })
+    return dataResponse
+}
+
+fun getSensorApi() : ArrayList<SensorModel> {
+    var dataResponse = ArrayList<SensorModel>()
+    RetrofitClientSensor.instance.getPosts().enqueue(object : Callback<ArrayList<SensorModel>>{
+        override fun onResponse(
+            call: Call<ArrayList<SensorModel>>,
+            response: Response<ArrayList<SensorModel>>
+        ) {
+            response.body()?.let { dataResponse.addAll(it) }
+        }
+
+        override fun onFailure(call: Call<ArrayList<SensorModel>>, t: Throwable) {
         }
     })
     return dataResponse
