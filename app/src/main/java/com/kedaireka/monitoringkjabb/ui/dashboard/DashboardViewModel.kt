@@ -64,7 +64,7 @@ class DashboardViewModel : ViewModel() {
                     sensorDataValue[i].toString(),
                     sensorDataUnit[i],
                     sensorDataDate,
-                    "https://firebasestorage.googleapis.com/v0/b/monitoring-kjabb.appspot.com/o/icons%2FThermometer-icon.png?alt=media&token=aa04b652-2b50-422a-8c66-4c7f7f066fd1"))
+                    sensorModel[i].url,))
                     thresholdData.add(hashMapOf("upper" to sensorModel[i].batas_atas.toDouble(),
                         "lower" to sensorModel[i].batas_bawah.toDouble()))
             }
