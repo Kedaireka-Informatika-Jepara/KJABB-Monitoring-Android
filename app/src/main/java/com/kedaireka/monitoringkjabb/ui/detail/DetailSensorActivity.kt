@@ -45,7 +45,6 @@ class DetailSensorActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailSensorBinding
     private lateinit var detailSensorViewModel: DetailSensorViewModel
-
     private lateinit var tvTitle: TextView
     private lateinit var tvValue: TextView
     private lateinit var tvLastUpdate: TextView

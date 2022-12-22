@@ -8,7 +8,12 @@ import com.google.firebase.Timestamp
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.kedaireka.monitoringkjabb.model.Sensor
+import com.kedaireka.monitoringkjabb.model.SensorData
+import com.kedaireka.monitoringkjabb.model.SensorModel
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.getDataApi
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.getSensorApi
 import java.util.*
 
 class DetailSensorViewModel : ViewModel() {
@@ -30,6 +35,9 @@ class DetailSensorViewModel : ViewModel() {
     val thresholds = _thresholds
 
     fun getSensorRecordInRange(sensor: Sensor, start: Long, end: Long) {
+        val databaseRef = ApiSensorData().sensorData
+
+
         val dbRef =
             Firebase.database("https://monitoring-kjabb-default-rtdb.asia-southeast1.firebasedatabase.app/")
                 .getReference("sensors/${sensor.id}/records")
@@ -65,6 +73,12 @@ class DetailSensorViewModel : ViewModel() {
 
     fun getSensorRecords(sensor: Sensor) {
         _isLoading.value = true
+
+
+        val graphData : ArrayList<SensorData> = getDataApi()
+        val sensorModel : ArrayList<SensorModel> = getSensorApi()
+
+
 
         val dbRef = DATABASE_REFERENCE
         dbRef.child("sensors/${sensor.id}/records").orderByKey().limitToLast(10).get()
