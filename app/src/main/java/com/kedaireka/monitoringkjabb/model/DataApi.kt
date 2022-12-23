@@ -17,8 +17,7 @@ data class SensorData(
     val amonia: String,
     val curah_hujan: String,
     val ph: String,
-    @SerializedName("do")
-    val dissolved_oxygen: String,
+    val tds: String,
     val turbidity: String,
     val waktu: String
 )
