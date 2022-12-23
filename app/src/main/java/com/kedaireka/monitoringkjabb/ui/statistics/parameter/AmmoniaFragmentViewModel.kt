@@ -121,62 +121,6 @@ class AmmoniaFragmentViewModel : ViewModel() {
             }
         })
     }
-
-//        val dbRef = DATABASE_REFERENCE
-//        dbRef.child("sensors/${sensor.id}/records").orderByKey().limitToLast(10).get()
-//            .addOnSuccessListener { result ->
-//                val records = arrayListOf<Sensor>()
-//                var min = Double.MAX_VALUE
-//                var max = Double.MIN_VALUE
-//                var counter = 0.0
-//
-//                for (document in result.children) {
-//                    try {
-//                        val id = sensor.id
-//                        val name = sensor.name
-//                        val value = document.child("value").value.toString()
-//                        val unit = sensor.unit
-//                        val createdAt =
-//                            Timestamp(
-//                                Date(
-//                                    document.child("created_at").value.toString().toLong() * 1000
-//                                )
-//                            )
-//                        val urlIcon = sensor.urlIcon
-//
-//                        val valueInDouble = value.toDouble()
-//                        counter += valueInDouble
-//
-//                        if (valueInDouble < min) {
-//                            min = valueInDouble
-//                        }
-//                        if (valueInDouble > max) {
-//                            max = valueInDouble
-//                        }
-//
-//                        records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
-//                    } catch (e: Exception) {
-//                        Log.d(
-//                            AmmoniaFragmentViewModel::class.java.simpleName,
-//                            "getDORecord: ${e.message.toString()}"
-//                        )
-//                    }
-//                }
-//                records.reverse()
-//
-//                val avg: Double = counter / records.size
-//
-//                _isLoading.postValue(false)
-//                _records.postValue(records)
-//                _min.postValue(min)
-//                _max.postValue(max)
-//                _avg.postValue(avg)
-//            }
-//            .addOnFailureListener {
-//                it.printStackTrace()
-//            }
-//    }
-
     fun getSensorRecordInRange(sensor: Sensor, start: Long, end: Long) {
         val dbRef =
             Firebase.database("https://monitoring-kjabb-default-rtdb.asia-southeast1.firebasedatabase.app/")
@@ -231,23 +175,9 @@ class AmmoniaFragmentViewModel : ViewModel() {
 
                 }
             }
-
             override fun onFailure(call: Call<ArrayList<SensorModel>>, t: Throwable) {
-                TODO("Not yet implemented")
             }
 
         })
-
-//        val dbRef = DATABASE_REFERENCE
-//        dbRef.child("sensors/ammonia/thresholds").get().addOnSuccessListener { result ->
-//            val dataThreshold = mapOf(
-//                "upper" to result.child("upper").value.toString(),
-//                "lower" to result.child("lower").value.toString(),
-//            )
-//
-//            _thresholds.postValue(dataThreshold)
-//        }.addOnFailureListener {
-//            it.printStackTrace()
-//        }
     }
 }
