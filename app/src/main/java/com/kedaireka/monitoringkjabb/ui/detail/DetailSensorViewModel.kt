@@ -91,7 +91,7 @@ class DetailSensorViewModel : ViewModel() {
             ) {
                 response.body()?.let {
                     val records = arrayListOf<Sensor>()
-                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(7))
+                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
                     val id = sensor.id
                     val name = sensor.name
                     val urlIcon = sensor.urlIcon
