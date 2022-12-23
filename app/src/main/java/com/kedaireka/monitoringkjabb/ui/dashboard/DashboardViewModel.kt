@@ -52,27 +52,27 @@ class DashboardViewModel : ViewModel() {
                 response: Response<GraphData>
             ) {
                 response.body()?.let {
-                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.data)
-                    val sensorDataValue: Array<Double?> = arrayOf(
-                        arrayListSensorData.last().turbidity.toDouble(),
-                        arrayListSensorData.last().amonia.toDouble(),
-                        arrayListSensorData.last().suhu.toDouble(),
-                        arrayListSensorData.last().ph.toDouble(),
-                        arrayListSensorData.last().dissolved_oxygen.toDouble(),
-                        arrayListSensorData.last().curah_hujan.toDouble(),
+                    val arrayListSensorData: SensorData = ArrayList(it.sensor)[0]
+                    val sensorDataValue: Array<String> = arrayOf(
+                        arrayListSensorData.turbidity,
+                        arrayListSensorData.amonia,
+                        arrayListSensorData.suhu,
+                        arrayListSensorData.ph,
+                        arrayListSensorData.dissolved_oxygen,
+                        arrayListSensorData.curah_hujan,
                     )
                     val sensorDataUnit: Array<String> =
                         arrayOf("°C", "mg/l", "", "pH", "mg/l", "NTU")
                     val sensorDataDate = ApiSensorData().dateConverter(
-                        arrayListSensorData.last()?.tanggal,
-                        arrayListSensorData.last()?.waktu
+                        arrayListSensorData.tanggal,
+                        arrayListSensorData.waktu
                     )
                     for (i in 0 until 6) {
                         sensorData.add(
                             Sensor(
                                 sensorModel[i].id_sensor,
                                 sensorModel[i].nama_sensor,
-                                sensorDataValue[i].toString(),
+                                sensorDataValue[i],
                                 sensorDataUnit[i],
                                 sensorDataDate,
                                 sensorModel[i].url,
