@@ -3,10 +3,18 @@ package com.kedaireka.monitoringkjabb.ui.dashboard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.Timestamp
+import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
+import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.getSensorApi
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -29,38 +37,96 @@ class DashboardViewModel : ViewModel() {
 
     private fun getSensorsData() {
         _isLoading.postValue(true)
+        val sensorData = arrayListOf<Sensor>()
+        val thresholdData = arrayListOf<Map<String, Double>>()
+
 
         val refRealtimeDatabase = DATABASE_REFERENCE
         refRealtimeDatabase.keepSynced(true)
-        refRealtimeDatabase.child("sensors").get().addOnSuccessListener { result ->
-            val sensorData = arrayListOf<Sensor>()
-            val thresholdData = arrayListOf<Map<String, Double>>()
-            for (sensor in result.children) {
-                val id = sensor.key!!
-                val name = sensor.child("data/name").value.toString()
-                val value =
-                    sensor.child("records").children.last().child("value").value.toString()
-                val unit = sensor.child("data/unit").value.toString()
-                val createdAt =
-                    sensor.child("records").children.last()
-                        .child("created_at").value.toString()
-                val urlIcon = sensor.child("data/url_icon").value.toString()
+//        val graphData : GraphData
+        val sensorModel = getSensorApi()
 
-                val createdAtTimestamp = Timestamp(Date(createdAt.toLong() * 1000))
-                sensorData.add(Sensor(id, name, value, unit, createdAtTimestamp, urlIcon))
-
-                val upper = sensor.child("thresholds/upper").value.toString().toDouble()
-                val lower = sensor.child("thresholds/lower").value.toString().toDouble()
-
-                thresholdData.add(hashMapOf("upper" to upper, "lower" to lower))
+        RetrofitClient.instance.getPosts().enqueue(object : Callback<GraphData> {
+            override fun onResponse(
+                call: Call<GraphData>,
+                response: Response<GraphData>
+            ) {
+                response.body()?.let {
+                    val arrayListSensorData: SensorData = ArrayList(it.sensor)[0]
+                    val sensorDataValue: Array<String> = arrayOf(
+                        arrayListSensorData.turbidity,
+                        arrayListSensorData.amonia,
+                        arrayListSensorData.suhu,
+                        arrayListSensorData.ph,
+                        arrayListSensorData.dissolved_oxygen,
+                        arrayListSensorData.curah_hujan,
+                    )
+                    val sensorDataUnit: Array<String> =
+                        arrayOf("°C", "mg/l", "", "pH", "mg/l", "NTU")
+                    val sensorDataDate = ApiSensorData().dateConverter(
+                        arrayListSensorData.tanggal,
+                        arrayListSensorData.waktu
+                    )
+                    for (i in 0 until 6) {
+                        sensorData.add(
+                            Sensor(
+                                sensorModel[i].id_sensor,
+                                sensorModel[i].nama_sensor,
+                                sensorDataValue[i],
+                                sensorDataUnit[i],
+                                sensorDataDate,
+                                sensorModel[i].url,
+                            )
+                        )
+                        thresholdData.add(
+                            hashMapOf(
+                                "upper" to sensorModel[i].batas_atas.toDouble(),
+                                "lower" to sensorModel[i].batas_bawah.toDouble()
+                            )
+                        )
+                    }
+                    _thresholdData.postValue(thresholdData)
+                    _data.postValue(sensorData)
+                    _isLoading.postValue(false)
+                }
             }
 
-            _thresholdData.postValue(thresholdData)
-            _data.postValue(sensorData)
-            _isLoading.postValue(false)
-        }.addOnFailureListener {
-            it.printStackTrace()
-        }
+            override fun onFailure(call: Call<GraphData>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+//        viewModelScope.launch {
+//
+//        }
+
+//        refRealtimeDatabase.child("sensors").get().addOnSuccessListener { result ->
+//
+//            // FIREBASE
+//            for (sensor in result.children) {
+//
+//                val id = sensor.key!!
+//                val name = sensor.child("data/name").value.toString()
+//                val value =
+//                    sensor.child("records").children.last().child("value").value.toString()
+//                val unit = sensor.child("data/unit").value.toString()
+//                val createdAt =
+//                    sensor.child("records").children.last()
+//                        .child("created_at").value.toString()
+//                val urlIcon = sensor.child("data/url_icon").value.toString()
+//
+////                Konversi millisecond to Date
+//                val createdAtTimestamp = Timestamp(Date(createdAt.toLong() * 1000))
+////                sensorData.add(Sensor(id, name, value, unit, createdAtTimestamp, urlIcon))
+//
+//                val upper = sensor.child("thresholds/upper").value.toString().toDouble()
+//                val lower = sensor.child("thresholds/lower").value.toString().toDouble()
+//
+////                thresholdData.add(hashMapOf("upper" to upper, "lower" to lower))
+//            }
+//
+//        }.addOnFailureListener {
+//            it.printStackTrace()
+//        }
     }
 
     private fun createDummyRecords() {
@@ -77,7 +143,7 @@ class DashboardViewModel : ViewModel() {
 
         // Ammonia
         for (i in 1..1100) {
-            val timeInMillis = Date().time - (1800000 * i)
+            val timeInMillis = Date().time - (1_800_000 * i)
             val db = DATABASE_REFERENCE
             val data = mutableMapOf<String, Any>()
             data["created_at"] = timeInMillis / 1000

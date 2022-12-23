@@ -79,11 +79,12 @@ class PhLevelsFragmentViewModel : ViewModel() {
                 }
                 records.reverse()
 
+                print(records)
                 val avg: Double = counter / records.size
                 _isLoading.postValue(false)
                 _records.postValue(records)
-                _min.postValue(min)
-                _max.postValue(max)
+                _min.postValue(0.0)
+                _max.postValue(14.0)
                 _avg.postValue(avg)
             }
             .addOnFailureListener { it.printStackTrace() }
