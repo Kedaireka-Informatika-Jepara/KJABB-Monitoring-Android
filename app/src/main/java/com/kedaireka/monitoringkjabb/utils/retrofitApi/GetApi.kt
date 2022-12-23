@@ -1,5 +1,8 @@
 package com.kedaireka.monitoringkjabb.utils.retrofitApi
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.model.SensorModel
@@ -47,14 +50,18 @@ object RetrofitClientSensor {
     }
 }
 
-fun getDataApi() : ArrayList<SensorData> {
-    var dataResponse = ArrayList<SensorData>()
+fun getDataApi() : LiveData<ArrayList<SensorData>> {
+    var dataResponse = MutableLiveData<ArrayList<SensorData>>()
+    var tempResponse = ArrayList<SensorData>()
     RetrofitClient.instance.getPosts().enqueue(object : Callback<GraphData>{
         override fun onResponse(
             call: Call<GraphData>,
             response: Response<GraphData>
         ) {
-            response.body()?.let { dataResponse.addAll(it.data) }
+            response.body()?.let { tempResponse.addAll(it.data)
+                dataResponse.postValue(tempResponse)
+            Log.d("getApi", dataResponse.toString())}
+
         }
 
         override fun onFailure(call: Call<GraphData>, t: Throwable) {

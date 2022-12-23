@@ -11,8 +11,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class ApiSensorData {
-    public val sensorData : ArrayList<SensorData> = getDataApi()
-    public val sensorModel : ArrayList<SensorModel> = getSensorApi()
+//    public val sensorData : ArrayList<SensorData> = getDataApi()
+//    public val sensorModel : ArrayList<SensorModel> = getSensorApi()
     public fun dateConverter(dateTanggal: String, dateWaktu: String) : Timestamp{
         val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         return Timestamp(Date(inputFormat.parse(dateTanggal + " " + dateWaktu).time))

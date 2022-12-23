@@ -35,7 +35,7 @@ class DetailSensorViewModel : ViewModel() {
     val thresholds = _thresholds
 
     fun getSensorRecordInRange(sensor: Sensor, start: Long, end: Long) {
-        val databaseRef = ApiSensorData().sensorData
+//        val databaseRef = ApiSensorData().sensorData
 
 
         val dbRef =
@@ -75,14 +75,15 @@ class DetailSensorViewModel : ViewModel() {
         _isLoading.value = true
 
 
-        val graphData : ArrayList<SensorData> = getDataApi()
-        val sensorModel : ArrayList<SensorModel> = getSensorApi()
+//        val graphData : ArrayList<SensorData> = getDataApi()
+//        val sensorModel : ArrayList<SensorModel> = getSensorApi()
 
 
 
         val dbRef = DATABASE_REFERENCE
         dbRef.child("sensors/${sensor.id}/records").orderByKey().limitToLast(10).get()
             .addOnSuccessListener { result ->
+
                 val records = arrayListOf<Sensor>()
                 for (document in result.children) {
                     try {
