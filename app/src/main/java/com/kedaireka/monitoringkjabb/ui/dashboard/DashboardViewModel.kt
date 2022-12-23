@@ -40,7 +40,6 @@ class DashboardViewModel : ViewModel() {
         val sensorData = arrayListOf<Sensor>()
         val thresholdData = arrayListOf<Map<String, Double>>()
 
-
         val refRealtimeDatabase = DATABASE_REFERENCE
         refRealtimeDatabase.keepSynced(true)
 //        val graphData : GraphData
@@ -58,7 +57,7 @@ class DashboardViewModel : ViewModel() {
                         arrayListSensorData.amonia,
                         arrayListSensorData.suhu,
                         arrayListSensorData.ph,
-                        arrayListSensorData.dissolved_oxygen,
+                        arrayListSensorData.tds,
                         arrayListSensorData.curah_hujan,
                     )
                     val sensorDataUnit: Array<String> =
