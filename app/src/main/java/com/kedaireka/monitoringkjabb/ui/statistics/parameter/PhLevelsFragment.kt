@@ -147,7 +147,7 @@ class PhLevelsFragment : Fragment() {
                     time.first / 1000,
                     time.second / 1000
                 )
-                phLevelFragmentViewModel.sensorRecordImage.observe(requireActivity(), {
+                phLevelFragmentViewModel.sensorRecordInRange.observe(requireActivity(), {
                     recordsInRange = it
 
                     if (recordsInRange.isNotEmpty()) {
@@ -189,7 +189,7 @@ class PhLevelsFragment : Fragment() {
         private fun getLatestSensor(): Sensor {
             val sensor: Sensor
 
-            val id = "ph_level"
+            val id = "4"
             val name = "pH Level"
             val value = "6.3"
             val unit = ""

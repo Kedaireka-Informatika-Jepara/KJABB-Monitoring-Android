@@ -5,13 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.model.SensorModel
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor
@@ -20,8 +17,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-class WaterTemperatureFragmentViewModel : ViewModel() {
+class TdsFragmentViewModel : ViewModel() {
 
     private val _records = MutableLiveData<ArrayList<Sensor>>()
     val records: LiveData<ArrayList<Sensor>> = _records
@@ -54,28 +52,56 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
             ) {
                 response.body()?.let {
                     val records = arrayListOf<Sensor>()
+                    var min = Double.MAX_VALUE
+                    var max = Double.MIN_VALUE
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
-                    var tempVal = arrayListSensorData[0].suhu.toDouble()
-                    var min = tempVal
-                    var max = tempVal
                     val id = sensor.id
                     val name = sensor.name
                     val urlIcon = sensor.urlIcon
                     val unit = sensor.unit
 
-//                    Iterate through all data
-                    for (data in arrayListSensorData) {
-                        val value = data.suhu.toDouble()
-                        counter += value
-                        if (min > value){
-                            min = value
+                    if (id == "1"){
+                        for (data in arrayListSensorData) {
+                            val value = data.turbidity
+                            val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                            records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
                         }
-                        if (max < value){
-                            max = value
+                    }
+                    else if (id == "2"){
+                        for (data in arrayListSensorData) {
+                            val value = data.amonia
+                            val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                            records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
                         }
-                        val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
-                        records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
+                    }
+                    else if (id == "3"){
+                        for (data in arrayListSensorData) {
+                            val value = data.suhu
+                            val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                            records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
+                        }
+                    }
+                    else if (id == "4"){
+                        for (data in arrayListSensorData) {
+                            val value = data.ph
+                            val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                            records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
+                        }
+                    }
+                    else if (id == "5"){
+                        for (data in arrayListSensorData) {
+                            val value = data.tds
+                            val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                            records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
+                        }
+                    }
+                    else if (id == "6"){
+                        for (data in arrayListSensorData) {
+                            val value = data.curah_hujan
+                            val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                            records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
+                        }
                     }
                     records.reverse()
                     val avg: Double = counter / records.size
@@ -110,11 +136,11 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
                     val urlIcon = sensor.urlIcon
                     for(data in arrayListSensorData){
                         val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
-//                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
-//                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
+                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
+                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
 
-                        if (createdAt>=start){
-                            val value = data.suhu
+                        if (createdAt>start){
+                            val value = data.amonia
                             records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
                         }
                         if (createdAt>end){
@@ -127,7 +153,7 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<GraphData>, t: Throwable) {
-//                TODO("Not yet implemented")
+                TODO("Not yet implemented")
             }
         })
     }
@@ -142,8 +168,8 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
                 response.body()?.let {
                     val sensorModel : ArrayList<SensorModel> = it
                     val dataThreshold = mapOf(
-                        "upper" to sensorModel?.get(sensor.id.toInt()-1).batas_atas,
-                        "lower" to sensorModel?.get(sensor.id.toInt()-1).batas_bawah,
+                        "upper" to sensorModel?.get(sensor.id.toInt()).batas_atas,
+                        "lower" to sensorModel?.get(sensor.id.toInt()).batas_bawah,
                     )
                     _thresholds.postValue(dataThreshold)
 

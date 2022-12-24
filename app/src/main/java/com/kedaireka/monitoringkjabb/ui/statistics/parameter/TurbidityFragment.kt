@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.text.format.DateFormat
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -25,7 +25,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.R
-import com.kedaireka.monitoringkjabb.databinding.FragmentPhLevelsBinding
+import com.kedaireka.monitoringkjabb.databinding.FragmentTurbidityBinding
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
 import com.kedaireka.monitoringkjabb.utils.ExcelUtils
@@ -33,13 +33,12 @@ import java.util.*
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
+class TurbidityFragment : Fragment() {
 
-class DissolvedFragment : Fragment() {
-    private lateinit var phLevelFragmentViewModel: PhLevelsFragmentViewModel
+    private lateinit var turbidityFragmentViewModel: TurbidityFragmentViewModel
     private lateinit var recordsInRange: ArrayList<Sensor>
 
-
-    private var _binding: FragmentPhLevelsBinding? = null
+    private var _binding: FragmentTurbidityBinding? = null
     private val binding get() = _binding!!
 
     private var max = 0.0
@@ -47,43 +46,42 @@ class DissolvedFragment : Fragment() {
     private var avg = 0.0
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        phLevelFragmentViewModel = ViewModelProvider(this)[PhLevelsFragmentViewModel::class.java]
+        turbidityFragmentViewModel = ViewModelProvider(this)[TurbidityFragmentViewModel::class.java]
 
-        _binding = FragmentPhLevelsBinding.inflate(inflater, container, false)
+        _binding = FragmentTurbidityBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val sensor = getLatestSensor()
-        phLevelFragmentViewModel.getDORecord(sensor)
-        phLevelFragmentViewModel.getThresholdsData(sensor)
+        turbidityFragmentViewModel.getDORecord(sensor)
+        turbidityFragmentViewModel.getThresholdsData(sensor)
 
-        phLevelFragmentViewModel.avg.observe(viewLifecycleOwner, { result ->
+        turbidityFragmentViewModel.avg.observe(viewLifecycleOwner) { result ->
             avg = result
             val value = "%.2f ${sensor.unit}".format(result)
             binding.tvAvg.text = value
-        })
+        }
 
-        phLevelFragmentViewModel.max.observe(viewLifecycleOwner, {
+        turbidityFragmentViewModel.max.observe(viewLifecycleOwner) {
             max = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        phLevelFragmentViewModel.min.observe(viewLifecycleOwner, {
+        turbidityFragmentViewModel.min.observe(viewLifecycleOwner) {
             min = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        phLevelFragmentViewModel.records.observe(viewLifecycleOwner, { result ->
+        turbidityFragmentViewModel.records.observe(viewLifecycleOwner) { result ->
             val lineChart = binding.lineChart
             setDOLineChart(lineChart, result)
-        })
+        }
 
-        phLevelFragmentViewModel.thresholds.observe(viewLifecycleOwner, {
+        turbidityFragmentViewModel.thresholds.observe(viewLifecycleOwner) {
             val upper = it["upper"]?.toDouble()!!
             val lower = it["lower"]?.toDouble()!!
 
@@ -93,9 +91,9 @@ class DissolvedFragment : Fragment() {
                 binding.tvStatus.text = getString(R.string.status_bad)
                 binding.cardStatus.setCardBackgroundColor(resources.getColor(R.color.yellow))
             }
-        })
+        }
 
-        phLevelFragmentViewModel.isLoading.observe(viewLifecycleOwner, {
+        turbidityFragmentViewModel.isLoading.observe(viewLifecycleOwner) {
             if (it) {
                 binding.pbLoading.visibility = View.VISIBLE
                 binding.lineChart.visibility = View.INVISIBLE
@@ -103,7 +101,7 @@ class DissolvedFragment : Fragment() {
                 binding.pbLoading.visibility = View.GONE
                 binding.lineChart.visibility = View.VISIBLE
             }
-        })
+        }
 
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
@@ -144,12 +142,13 @@ class DissolvedFragment : Fragment() {
                 // Generate Data
                 Toast.makeText(requireContext(), "Saving Data", Toast.LENGTH_SHORT).show()
 
-                phLevelFragmentViewModel.getSensorRecordInRange(
+                turbidityFragmentViewModel.getSensorRecordInRange(
                     sensor,
                     time.first / 1000,
                     time.second / 1000
                 )
-                phLevelFragmentViewModel.sensorRecordImage.observe(requireActivity(), {
+
+                turbidityFragmentViewModel.sensorRecordInRange.observe(requireActivity()) {
                     recordsInRange = it
 
                     if (recordsInRange.isNotEmpty()) {
@@ -178,7 +177,7 @@ class DissolvedFragment : Fragment() {
                             .show()
                     }
 
-                })
+                }
             }
 
             dateRangePicker.show(requireActivity().supportFragmentManager, "DetailSensorActivity")
@@ -187,14 +186,13 @@ class DissolvedFragment : Fragment() {
         return root
     }
 
-
     private fun getLatestSensor(): Sensor {
         val sensor: Sensor
 
-        val id = "dissolved_oxygen"
-        val name = "Dissolved Oxygen"
-        val value = "0.6"
-        val unit = ""
+        val id = "1"
+        val name = "Turbidity"
+        val value = "6.3"
+        val unit = "NTU"
         val createdAt = Timestamp(Date())
         val iconUrl = "url"
 
@@ -239,7 +237,6 @@ class DissolvedFragment : Fragment() {
         lineChart.setScaleEnabled(false)
 
     }
-
 
     private fun checkPermission(permission: String, requestCode: Int) {
         if (ContextCompat.checkSelfPermission(

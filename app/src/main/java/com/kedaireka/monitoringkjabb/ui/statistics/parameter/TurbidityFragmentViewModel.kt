@@ -5,13 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.model.SensorModel
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor
@@ -20,8 +17,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-class WaterTemperatureFragmentViewModel : ViewModel() {
+class TurbidityFragmentViewModel : ViewModel() {
 
     private val _records = MutableLiveData<ArrayList<Sensor>>()
     val records: LiveData<ArrayList<Sensor>> = _records
@@ -54,9 +52,10 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
             ) {
                 response.body()?.let {
                     val records = arrayListOf<Sensor>()
+
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
-                    var tempVal = arrayListSensorData[0].suhu.toDouble()
+                    var tempVal = arrayListSensorData[0].turbidity.toDouble()
                     var min = tempVal
                     var max = tempVal
                     val id = sensor.id
@@ -66,7 +65,7 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
 
 //                    Iterate through all data
                     for (data in arrayListSensorData) {
-                        val value = data.suhu.toDouble()
+                        val value = data.turbidity.toDouble()
                         counter += value
                         if (min > value){
                             min = value
@@ -114,7 +113,7 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
 //                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
 
                         if (createdAt>=start){
-                            val value = data.suhu
+                            val value = data.turbidity
                             records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
                         }
                         if (createdAt>end){

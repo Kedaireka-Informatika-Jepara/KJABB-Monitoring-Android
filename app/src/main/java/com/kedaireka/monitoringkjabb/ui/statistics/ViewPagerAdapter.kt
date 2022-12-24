@@ -17,12 +17,13 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
 
     override fun createFragment(position: Int): Fragment {
         when (position) {
-            0 -> return AmmoniaFragment()
-            1 -> return RaindropsFragment()
+            0 -> return TurbidityFragment()
+            1 -> return AmmoniaFragment()
             2 -> return WaterTemperatureFragment()
             3 -> return PhLevelsFragment()
+            4 -> return TdsFragment()
         }
 
-        return DissolvedFragment()
+        return RaindropsFragment()
     }
 }
