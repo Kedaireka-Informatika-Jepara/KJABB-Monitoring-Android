@@ -1,6 +1,5 @@
-package com.kedaireka.monitoringkjabb.ui.statistics.parameter
+package com.kedaireka.monitoringkjabb.ui.prediction.parameter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AmmoniaFragmentViewModel : ViewModel() {
+class RaindropsPredictionFragmentViewModel : ViewModel() {
 
     private val _records = MutableLiveData<ArrayList<Sensor>>()
     val records: LiveData<ArrayList<Sensor>> = _records
@@ -54,7 +53,9 @@ class AmmoniaFragmentViewModel : ViewModel() {
                     val records = arrayListOf<Sensor>()
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
-                    var tempVal = arrayListSensorData[0].amonia.toDouble()
+                    var tempVal = arrayListSensorData[0].ph.toDouble()
+                    var tempValLast = arrayListSensorData.last().ph.toDouble()
+                    val dataGrowthRate = 1 + ((tempValLast - tempVal) / tempVal)/10
                     var min = tempVal
                     var max = tempVal
                     val id = sensor.id
@@ -63,7 +64,7 @@ class AmmoniaFragmentViewModel : ViewModel() {
                     val unit = sensor.unit
 
                     for (data in arrayListSensorData) {
-                        val value = data.amonia.toDouble()
+                        val value = data.ph.toDouble()*dataGrowthRate
                         counter += value
                         if (min > value){
                             min = value
@@ -72,9 +73,10 @@ class AmmoniaFragmentViewModel : ViewModel() {
                             max = value
                         }
 
-                        val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                        val createdAt = ApiSensorData().dateConverterPred(data.tanggal, data.waktu)
                         records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
+                    records.reverse()
                     val avg: Double = counter / records.size
 
                     _isLoading.postValue(false)
@@ -111,7 +113,7 @@ class AmmoniaFragmentViewModel : ViewModel() {
 //                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
 
                         if (createdAt>=start){
-                            val value = data.amonia
+                            val value = data.ph
                             records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
                         }
                         if (createdAt>end){

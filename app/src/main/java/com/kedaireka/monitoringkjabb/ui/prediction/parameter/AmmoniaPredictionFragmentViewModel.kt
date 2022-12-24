@@ -54,6 +54,8 @@ class AmmoniaPredictionFragmentViewModel : ViewModel() {
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
                     var tempVal = arrayListSensorData[0].amonia.toDouble()
+                    var tempValLast = arrayListSensorData.last().amonia.toDouble()
+                    val dataGrowthRate = 1 + ((tempValLast - tempVal) / tempVal)/10
                     var min = tempVal
                     var max = tempVal
                     val id = sensor.id
@@ -62,8 +64,7 @@ class AmmoniaPredictionFragmentViewModel : ViewModel() {
                     val unit = sensor.unit
 
                     for (data in arrayListSensorData) {
-                        val value = data.amonia.toDouble()
-                        counter += value
+                        val value = data.amonia.toDouble()*dataGrowthRate
                         counter += value
                         if (min > value){
                             min = value
@@ -72,10 +73,9 @@ class AmmoniaPredictionFragmentViewModel : ViewModel() {
                             max = value
                         }
 
-                        val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                        val createdAt = ApiSensorData().dateConverterPred(data.tanggal, data.waktu)
                         records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
-                    records.reverse()
                     val avg: Double = counter / records.size
 
                     _isLoading.postValue(false)
