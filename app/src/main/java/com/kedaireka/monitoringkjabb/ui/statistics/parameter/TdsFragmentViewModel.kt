@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AmmoniaFragmentViewModel : ViewModel() {
+class TdsFragmentViewModel : ViewModel() {
 
     private val _records = MutableLiveData<ArrayList<Sensor>>()
     val records: LiveData<ArrayList<Sensor>> = _records
