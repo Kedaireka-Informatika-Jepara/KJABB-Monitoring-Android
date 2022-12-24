@@ -109,8 +109,8 @@ class AmmoniaFragmentViewModel : ViewModel() {
                     val urlIcon = sensor.urlIcon
                     for(data in arrayListSensorData){
                         val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
-                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
-                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
+//                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
+//                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
 
                         if (createdAt>=start){
                             val value = data.amonia
