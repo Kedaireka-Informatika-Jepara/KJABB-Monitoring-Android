@@ -52,7 +52,7 @@ class AmmoniaPredictionFragmentViewModel : ViewModel() {
                 response.body()?.let {
                     val records = arrayListOf<Sensor>()
                     var counter = 0.0
-                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
+                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
                     var tempVal = arrayListSensorData[0].amonia.toDouble()
                     var min = tempVal
                     var max = tempVal

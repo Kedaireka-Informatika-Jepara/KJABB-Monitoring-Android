@@ -25,11 +25,9 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.R
-import com.kedaireka.monitoringkjabb.databinding.FragmentAmmoniaBinding
 import com.kedaireka.monitoringkjabb.databinding.FragmentAmmoniaPredictionBinding
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.AmmoniaFragmentViewModel
 import com.kedaireka.monitoringkjabb.utils.ExcelUtils
 import java.util.*
 import java.util.concurrent.Executors
