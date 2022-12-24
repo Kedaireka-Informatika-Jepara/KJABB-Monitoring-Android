@@ -54,10 +54,11 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
             ) {
                 response.body()?.let {
                     val records = arrayListOf<Sensor>()
-                    var min = Double.MAX_VALUE
-                    var max = Double.MIN_VALUE
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
+                    var tempVal = arrayListSensorData[0].suhu.toDouble()
+                    var min = tempVal
+                    var max = tempVal
                     val id = sensor.id
                     val name = sensor.name
                     val urlIcon = sensor.urlIcon
@@ -65,10 +66,16 @@ class WaterTemperatureFragmentViewModel : ViewModel() {
 
 //                    Iterate through all data
                     for (data in arrayListSensorData) {
-                        val value = data.suhu
-                        counter += value.toDouble()
+                        val value = data.suhu.toDouble()
+                        counter += value
+                        if (min > value){
+                            min = value
+                        }
+                        if (max < value){
+                            max = value
+                        }
                         val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
-                        records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
+                        records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
                     records.reverse()
                     val avg: Double = counter / records.size
