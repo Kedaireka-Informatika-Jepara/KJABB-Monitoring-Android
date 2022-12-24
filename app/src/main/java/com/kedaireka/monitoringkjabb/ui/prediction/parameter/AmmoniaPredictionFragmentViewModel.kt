@@ -76,7 +76,6 @@ class AmmoniaPredictionFragmentViewModel : ViewModel() {
                         val createdAt = ApiSensorData().dateConverterPred(data.tanggal, data.waktu)
                         records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
-                    records.reverse()
                     val avg: Double = counter / records.size
 
                     _isLoading.postValue(false)

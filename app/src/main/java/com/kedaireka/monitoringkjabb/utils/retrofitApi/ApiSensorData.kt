@@ -18,6 +18,6 @@ class ApiSensorData {
 
     public fun dateConverterPred(dateTanggal: String, dateWaktu: String): Timestamp {
         val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        return Timestamp(Date(inputFormat.parse(dateTanggal + " " + dateWaktu).time + 86400))
+        return Timestamp(Date(inputFormat.parse(dateTanggal + " " + dateWaktu).time + 86400000))
     }
 }
