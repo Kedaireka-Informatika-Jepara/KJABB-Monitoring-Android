@@ -63,6 +63,7 @@ class AmmoniaFragmentViewModel : ViewModel() {
 
                     for (data in arrayListSensorData) {
                         val value = data.amonia
+                        counter += value.toDouble()
                         val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
                         records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
                     }
