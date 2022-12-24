@@ -25,26 +25,15 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.R
-import com.kedaireka.monitoringkjabb.databinding.FragmentTdsBinding
 import com.kedaireka.monitoringkjabb.databinding.FragmentTdsPredictionBinding
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.TdsFragmentViewModel
 import com.kedaireka.monitoringkjabb.utils.ExcelUtils
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TdsPredictionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TdsPredictionFragment : Fragment() {
 
     private lateinit var tdsFragmentViewModel: TdsPredictionFragmentViewModel
