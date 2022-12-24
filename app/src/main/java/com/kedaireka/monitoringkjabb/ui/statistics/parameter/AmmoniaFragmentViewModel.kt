@@ -53,7 +53,7 @@ class AmmoniaFragmentViewModel : ViewModel() {
                 response.body()?.let {
                     val records = arrayListOf<Sensor>()
                     var counter = 0.0
-                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
+                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
                     var tempVal = arrayListSensorData[0].amonia.toDouble()
                     var min = tempVal
                     var max = tempVal
@@ -76,7 +76,6 @@ class AmmoniaFragmentViewModel : ViewModel() {
                         val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
                         records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
-                    records.reverse()
                     val avg: Double = counter / records.size
 
                     _isLoading.postValue(false)
@@ -109,8 +108,8 @@ class AmmoniaFragmentViewModel : ViewModel() {
                     val urlIcon = sensor.urlIcon
                     for(data in arrayListSensorData){
                         val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
-                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
-                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
+//                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
+//                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
 
                         if (createdAt>=start){
                             val value = data.amonia

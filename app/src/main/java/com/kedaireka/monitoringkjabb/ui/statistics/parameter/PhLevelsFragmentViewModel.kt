@@ -56,7 +56,7 @@ class PhLevelsFragmentViewModel : ViewModel() {
                 response.body()?.let {
                     val records = arrayListOf<Sensor>()
                     var counter = 0.0
-                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
+                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
                     var tempVal = arrayListSensorData[0].ph.toDouble()
                     var min = tempVal
                     var max = tempVal
@@ -78,7 +78,6 @@ class PhLevelsFragmentViewModel : ViewModel() {
                         val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
                         records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
-                    records.reverse()
                     val avg: Double = counter / records.size
 
                     _isLoading.postValue(false)
