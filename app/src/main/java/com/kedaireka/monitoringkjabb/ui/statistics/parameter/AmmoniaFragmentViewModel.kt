@@ -54,7 +54,7 @@ class AmmoniaFragmentViewModel : ViewModel() {
                     val records = arrayListOf<Sensor>()
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
-                    var tempVal = arrayListSensorData[0].suhu.toDouble()
+                    var tempVal = arrayListSensorData[0].amonia.toDouble()
                     var min = tempVal
                     var max = tempVal
                     val id = sensor.id
