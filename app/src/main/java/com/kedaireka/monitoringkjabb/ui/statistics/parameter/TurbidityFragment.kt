@@ -58,30 +58,30 @@ class TurbidityFragment : Fragment() {
         turbidityFragmentViewModel.getDORecord(sensor)
         turbidityFragmentViewModel.getThresholdsData(sensor)
 
-        turbidityFragmentViewModel.avg.observe(viewLifecycleOwner, { result ->
+        turbidityFragmentViewModel.avg.observe(viewLifecycleOwner) { result ->
             avg = result
             val value = "%.2f ${sensor.unit}".format(result)
             binding.tvAvg.text = value
-        })
+        }
 
-        turbidityFragmentViewModel.max.observe(viewLifecycleOwner, {
+        turbidityFragmentViewModel.max.observe(viewLifecycleOwner) {
             max = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        turbidityFragmentViewModel.min.observe(viewLifecycleOwner, {
+        turbidityFragmentViewModel.min.observe(viewLifecycleOwner) {
             min = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        turbidityFragmentViewModel.records.observe(viewLifecycleOwner, { result ->
+        turbidityFragmentViewModel.records.observe(viewLifecycleOwner) { result ->
             val lineChart = binding.lineChart
             setDOLineChart(lineChart, result)
-        })
+        }
 
-        turbidityFragmentViewModel.thresholds.observe(viewLifecycleOwner, {
+        turbidityFragmentViewModel.thresholds.observe(viewLifecycleOwner) {
             val upper = it["upper"]?.toDouble()!!
             val lower = it["lower"]?.toDouble()!!
 
@@ -91,9 +91,9 @@ class TurbidityFragment : Fragment() {
                 binding.tvStatus.text = getString(R.string.status_bad)
                 binding.cardStatus.setCardBackgroundColor(resources.getColor(R.color.yellow))
             }
-        })
+        }
 
-        turbidityFragmentViewModel.isLoading.observe(viewLifecycleOwner, {
+        turbidityFragmentViewModel.isLoading.observe(viewLifecycleOwner) {
             if (it) {
                 binding.pbLoading.visibility = View.VISIBLE
                 binding.lineChart.visibility = View.INVISIBLE
@@ -101,7 +101,7 @@ class TurbidityFragment : Fragment() {
                 binding.pbLoading.visibility = View.GONE
                 binding.lineChart.visibility = View.VISIBLE
             }
-        })
+        }
 
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
@@ -148,7 +148,7 @@ class TurbidityFragment : Fragment() {
                     time.second / 1000
                 )
 
-                turbidityFragmentViewModel.sensorRecordInRange.observe(requireActivity(), {
+                turbidityFragmentViewModel.sensorRecordInRange.observe(requireActivity()) {
                     recordsInRange = it
 
                     if (recordsInRange.isNotEmpty()) {
@@ -177,7 +177,7 @@ class TurbidityFragment : Fragment() {
                             .show()
                     }
 
-                })
+                }
             }
 
             dateRangePicker.show(requireActivity().supportFragmentManager, "DetailSensorActivity")

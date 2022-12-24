@@ -58,30 +58,30 @@ class WaterTemperatureFragment : Fragment() {
         waterTemperatureFragmentViewModel.getDORecord(sensor)
         waterTemperatureFragmentViewModel.getThresholdsData(sensor)
 
-        waterTemperatureFragmentViewModel.avg.observe(viewLifecycleOwner, { result ->
+        waterTemperatureFragmentViewModel.avg.observe(viewLifecycleOwner) { result ->
             avg = result
             val value = "%.2f ${sensor.unit}".format(result)
             binding.tvAvg.text = value
-        })
+        }
 
-        waterTemperatureFragmentViewModel.max.observe(viewLifecycleOwner, {
+        waterTemperatureFragmentViewModel.max.observe(viewLifecycleOwner) {
             max = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        waterTemperatureFragmentViewModel.min.observe(viewLifecycleOwner, {
+        waterTemperatureFragmentViewModel.min.observe(viewLifecycleOwner) {
             min = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        waterTemperatureFragmentViewModel.records.observe(viewLifecycleOwner, { result ->
+        waterTemperatureFragmentViewModel.records.observe(viewLifecycleOwner) { result ->
             val lineChart = binding.lineChart
             setDOLineChart(lineChart, result)
-        })
+        }
 
-        waterTemperatureFragmentViewModel.thresholds.observe(viewLifecycleOwner, {
+        waterTemperatureFragmentViewModel.thresholds.observe(viewLifecycleOwner) {
             val upper = it["upper"]?.toDouble()!!
             val lower = it["lower"]?.toDouble()!!
 
@@ -91,9 +91,9 @@ class WaterTemperatureFragment : Fragment() {
                 binding.tvStatus.text = getString(R.string.status_bad)
                 binding.cardStatus.setCardBackgroundColor(resources.getColor(R.color.yellow))
             }
-        })
+        }
 
-        waterTemperatureFragmentViewModel.isLoading.observe(viewLifecycleOwner, {
+        waterTemperatureFragmentViewModel.isLoading.observe(viewLifecycleOwner) {
             if (it) {
                 binding.pbLoading.visibility = View.VISIBLE
                 binding.lineChart.visibility = View.INVISIBLE
@@ -101,7 +101,7 @@ class WaterTemperatureFragment : Fragment() {
                 binding.pbLoading.visibility = View.GONE
                 binding.lineChart.visibility = View.VISIBLE
             }
-        })
+        }
 
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
@@ -147,7 +147,7 @@ class WaterTemperatureFragment : Fragment() {
                     time.first / 1000,
                     time.second / 1000
                 )
-                waterTemperatureFragmentViewModel.sensorRecordInRange.observe(requireActivity(), {
+                waterTemperatureFragmentViewModel.sensorRecordInRange.observe(requireActivity()) {
                     recordsInRange = it
 
                     if (recordsInRange.isNotEmpty()) {
@@ -176,7 +176,7 @@ class WaterTemperatureFragment : Fragment() {
                             .show()
                     }
 
-                })
+                }
             }
 
             dateRangePicker.show(requireActivity().supportFragmentManager, "DetailSensorActivity")
@@ -188,8 +188,8 @@ class WaterTemperatureFragment : Fragment() {
     private fun getLatestSensor(): Sensor {
         val sensor: Sensor
 
-        val id = "water_temperature"
-        val name = "Water Temperature"
+        val id = "3"
+        val name = "Suhu Air"
         val value = "6.3"
         val unit = "°C"
         val createdAt = Timestamp(Date())

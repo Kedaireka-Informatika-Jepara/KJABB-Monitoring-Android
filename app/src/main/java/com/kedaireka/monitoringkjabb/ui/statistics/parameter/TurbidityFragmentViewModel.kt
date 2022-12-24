@@ -103,8 +103,8 @@ class TurbidityFragmentViewModel : ViewModel() {
 //                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
 //                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
 
-                        if (createdAt>start){
-                            val value = data.amonia
+                        if (createdAt>=start){
+                            val value = data.turbidity
                             records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
                         }
                         if (createdAt>end){
@@ -132,8 +132,8 @@ class TurbidityFragmentViewModel : ViewModel() {
                 response.body()?.let {
                     val sensorModel : ArrayList<SensorModel> = it
                     val dataThreshold = mapOf(
-                        "upper" to sensorModel?.get(sensor.id.toInt()).batas_atas,
-                        "lower" to sensorModel?.get(sensor.id.toInt()).batas_bawah,
+                        "upper" to sensorModel?.get(sensor.id.toInt()-1).batas_atas,
+                        "lower" to sensorModel?.get(sensor.id.toInt()-1).batas_bawah,
                     )
                     _thresholds.postValue(dataThreshold)
 

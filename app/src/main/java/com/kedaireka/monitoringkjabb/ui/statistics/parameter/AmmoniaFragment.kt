@@ -58,30 +58,30 @@ class AmmoniaFragment : Fragment() {
         ammoniaFragmentViewModel.getDORecord(sensor)
         ammoniaFragmentViewModel.getThresholdsData(sensor)
 
-        ammoniaFragmentViewModel.avg.observe(viewLifecycleOwner, { result ->
+        ammoniaFragmentViewModel.avg.observe(viewLifecycleOwner) { result ->
             avg = result
             val value = "%.2f ${sensor.unit}".format(result)
             binding.tvAvg.text = value
-        })
+        }
 
-        ammoniaFragmentViewModel.max.observe(viewLifecycleOwner, {
+        ammoniaFragmentViewModel.max.observe(viewLifecycleOwner) {
             max = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        ammoniaFragmentViewModel.min.observe(viewLifecycleOwner, {
+        ammoniaFragmentViewModel.min.observe(viewLifecycleOwner) {
             min = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        ammoniaFragmentViewModel.records.observe(viewLifecycleOwner, { result ->
+        ammoniaFragmentViewModel.records.observe(viewLifecycleOwner) { result ->
             val lineChart = binding.lineChart
             setDOLineChart(lineChart, result)
-        })
+        }
 
-        ammoniaFragmentViewModel.thresholds.observe(viewLifecycleOwner, {
+        ammoniaFragmentViewModel.thresholds.observe(viewLifecycleOwner) {
             val upper = it["upper"]?.toDouble()!!
             val lower = it["lower"]?.toDouble()!!
 
@@ -91,9 +91,9 @@ class AmmoniaFragment : Fragment() {
                 binding.tvStatus.text = getString(R.string.status_bad)
                 binding.cardStatus.setCardBackgroundColor(resources.getColor(R.color.yellow))
             }
-        })
+        }
 
-        ammoniaFragmentViewModel.isLoading.observe(viewLifecycleOwner, {
+        ammoniaFragmentViewModel.isLoading.observe(viewLifecycleOwner) {
             if (it) {
                 binding.pbLoading.visibility = View.VISIBLE
                 binding.lineChart.visibility = View.INVISIBLE
@@ -101,7 +101,7 @@ class AmmoniaFragment : Fragment() {
                 binding.pbLoading.visibility = View.GONE
                 binding.lineChart.visibility = View.VISIBLE
             }
-        })
+        }
 
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
@@ -148,7 +148,7 @@ class AmmoniaFragment : Fragment() {
                     time.second / 1000
                 )
 
-                ammoniaFragmentViewModel.sensorRecordInRange.observe(requireActivity(), {
+                ammoniaFragmentViewModel.sensorRecordInRange.observe(requireActivity()) {
                     recordsInRange = it
 
                     if (recordsInRange.isNotEmpty()) {
@@ -177,7 +177,7 @@ class AmmoniaFragment : Fragment() {
                             .show()
                     }
 
-                })
+                }
             }
 
             dateRangePicker.show(requireActivity().supportFragmentManager, "DetailSensorActivity")
