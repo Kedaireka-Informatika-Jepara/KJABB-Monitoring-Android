@@ -65,7 +65,6 @@ class AmmoniaFragmentViewModel : ViewModel() {
                     for (data in arrayListSensorData) {
                         val value = data.amonia.toDouble()
                         counter += value
-                        counter += value
                         if (min > value){
                             min = value
                         }

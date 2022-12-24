@@ -217,7 +217,7 @@ class AmmoniaPredictionFragment : Fragment() {
         val size = records.size
 
         for (i in 0 until size) {
-            val df = DateFormat.format("ha", records[size - i - 1].created_at.toDate())
+            val df = DateFormat.format("yyyy-MM-dd HH:mm:ss", records[size - i - 1].created_at.toDate())
 
             xValue.add(df.toString())
             lineEntry.add(Entry(i.toFloat(), records[size - i - 1].value.toFloat()))

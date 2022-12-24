@@ -10,11 +10,12 @@ import com.kedaireka.monitoringkjabb.databinding.FragmentPredictionBinding
 
 
 private val parameterArray = arrayOf(
-    "Ammonia",
-    "Raindrops",
-    "Water Temperature",
+    "Turbidity",
+    "Amonia",
+    "Suhu",
     "pH Level",
-    "Dissolved Oxygen"
+    "Zat Padat Terlarut",
+    "Curah Hujan"
 )
 
 class PredictionFragment : Fragment() {

@@ -4,9 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.AmmoniaFragment
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.RaindropsFragment
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.WaterTemperatureFragment
+import com.kedaireka.monitoringkjabb.ui.prediction.parameter.*
 
 private const val NUM_TABS = 6
 
@@ -18,13 +16,14 @@ private const val NUM_TABS = 6
 
         override fun createFragment(position: Int): Fragment {
             when (position) {
-                0 -> return AmmoniaFragment()
-                1 -> return RaindropsFragment()
-                2 -> return AmmoniaFragment()
-                3 -> return RaindropsFragment()
+                0 -> return TurbidityPredictionFragment()
+                1 -> return AmmoniaPredictionFragment()
+                2 -> return SuhuPredictionFragment()
+                3 -> return PhLevelsPredictionFragment()
+                4 -> return TdsPredictionFragment()
             }
 
-            return WaterTemperatureFragment()
+            return RaindropsPredictionFragment()
         }
     }
 
