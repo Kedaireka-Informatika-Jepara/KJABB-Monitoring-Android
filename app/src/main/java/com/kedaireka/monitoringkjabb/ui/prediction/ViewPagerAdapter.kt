@@ -8,7 +8,7 @@ import com.kedaireka.monitoringkjabb.ui.statistics.parameter.AmmoniaFragment
 import com.kedaireka.monitoringkjabb.ui.statistics.parameter.RaindropsFragment
 import com.kedaireka.monitoringkjabb.ui.statistics.parameter.WaterTemperatureFragment
 
-private const val NUM_TABS = 5
+private const val NUM_TABS = 6
 
     class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
