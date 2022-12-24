@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.kedaireka.monitoringkjabb.ui.statistics.parameter.*
 
 
-private const val NUM_TABS = 5
+private const val NUM_TABS = 6
 
 class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
     FragmentStateAdapter(fragmentManager, lifecycle) {

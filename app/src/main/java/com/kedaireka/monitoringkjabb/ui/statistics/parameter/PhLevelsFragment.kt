@@ -58,30 +58,32 @@ class PhLevelsFragment : Fragment() {
         phLevelFragmentViewModel.getDORecord(sensor)
         phLevelFragmentViewModel.getThresholdsData(sensor)
 
-        phLevelFragmentViewModel.avg.observe(viewLifecycleOwner, { result ->
+        phLevelFragmentViewModel.avg.observe(viewLifecycleOwner) { result ->
             avg = result
             val value = "%.2f ${sensor.unit}".format(result)
             binding.tvAvg.text = value
-        })
+        }
 
-        phLevelFragmentViewModel.max.observe(viewLifecycleOwner, {
+        phLevelFragmentViewModel.max.observe(
+            viewLifecycleOwner,
+        ) {
             max = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        phLevelFragmentViewModel.min.observe(viewLifecycleOwner, {
+        phLevelFragmentViewModel.min.observe(viewLifecycleOwner) {
             min = it
             val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        phLevelFragmentViewModel.records.observe(viewLifecycleOwner, { result ->
+        phLevelFragmentViewModel.records.observe(viewLifecycleOwner) { result ->
             val lineChart = binding.lineChart
             setDOLineChart(lineChart, result)
-        })
+        }
 
-        phLevelFragmentViewModel.thresholds.observe(viewLifecycleOwner, {
+        phLevelFragmentViewModel.thresholds.observe(viewLifecycleOwner) {
             val upper = it["upper"]?.toDouble()!!
             val lower = it["lower"]?.toDouble()!!
 
@@ -91,9 +93,9 @@ class PhLevelsFragment : Fragment() {
                 binding.tvStatus.text = getString(R.string.status_bad)
                 binding.cardStatus.setCardBackgroundColor(resources.getColor(R.color.yellow))
             }
-        })
+        }
 
-        phLevelFragmentViewModel.isLoading.observe(viewLifecycleOwner, {
+        phLevelFragmentViewModel.isLoading.observe(viewLifecycleOwner) {
             if (it) {
                 binding.pbLoading.visibility = View.VISIBLE
                 binding.lineChart.visibility = View.INVISIBLE
@@ -101,7 +103,7 @@ class PhLevelsFragment : Fragment() {
                 binding.pbLoading.visibility = View.GONE
                 binding.lineChart.visibility = View.VISIBLE
             }
-        })
+        }
 
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
@@ -147,7 +149,7 @@ class PhLevelsFragment : Fragment() {
                     time.first / 1000,
                     time.second / 1000
                 )
-                phLevelFragmentViewModel.sensorRecordInRange.observe(requireActivity(), {
+                phLevelFragmentViewModel.sensorRecordInRange.observe(requireActivity()) {
                     recordsInRange = it
 
                     if (recordsInRange.isNotEmpty()) {
@@ -176,7 +178,7 @@ class PhLevelsFragment : Fragment() {
                             .show()
                     }
 
-                })
+                }
             }
 
             dateRangePicker.show(requireActivity().supportFragmentManager, "DetailSensorActivity")

@@ -16,7 +16,8 @@ private val parameterArray = arrayOf(
     "Amonia",
     "Suhu",
     "pH Level",
-    "Zat Padat Terlarut"
+    "Zat Padat Terlarut",
+    "Curah Hujan"
 )
 
 class StatisticsFragment : Fragment() {
