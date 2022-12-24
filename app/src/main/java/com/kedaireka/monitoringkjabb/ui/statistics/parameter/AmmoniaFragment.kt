@@ -147,6 +147,7 @@ class AmmoniaFragment : Fragment() {
                     time.first / 1000,
                     time.second / 1000
                 )
+
                 ammoniaFragmentViewModel.sensorRecordInRange.observe(requireActivity(), {
                     recordsInRange = it
 

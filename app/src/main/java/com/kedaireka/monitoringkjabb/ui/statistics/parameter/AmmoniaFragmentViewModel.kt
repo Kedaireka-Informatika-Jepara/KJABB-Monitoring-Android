@@ -15,9 +15,11 @@ import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_R
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor
+import org.apache.poi.ss.util.DateFormatConverter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -122,41 +124,78 @@ class AmmoniaFragmentViewModel : ViewModel() {
         })
     }
     fun getSensorRecordInRange(sensor: Sensor, start: Long, end: Long) {
-        val dbRef =
-            Firebase.database("https://monitoring-kjabb-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                .getReference("sensors/${sensor.id}/records")
+        RetrofitClient.instance.getPosts().enqueue(object : Callback<GraphData> {
+            override fun onResponse(
+                call: Call<GraphData>,
+                response: Response<GraphData>
+            ) {
+                response.body()?.let {
+                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.data)
+                    val records = arrayListOf<Sensor>()
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-        dbRef.orderByKey().startAfter(start.toString()).endBefore(end.toString())
-            .get().addOnSuccessListener { result ->
-                val records = arrayListOf<Sensor>()
-                Log.d("DetailSensorViewModel", result.childrenCount.toString())
-                for (document in result.children) {
-                    try {
-                        val id = sensor.id
-                        val name = sensor.name
-                        val value = document.child("value").value.toString()
-                        val unit = sensor.unit
-                        val createdAt =
-                            Timestamp(
-                                Date(
-                                    document.child("created_at").value.toString().toLong() * 1000
-                                )
-                            )
-                        val urlIcon = sensor.urlIcon
-                        records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
-                    } catch (e: Exception) {
-                        Log.d(
-                            AmmoniaFragmentViewModel::class.java.simpleName,
-                            "getSensorRecordInRange: ${e.message.toString()}"
-                        )
+                    val id = sensor.id
+                    val name = sensor.name
+                    val unit = sensor.unit
+                    val urlIcon = sensor.urlIcon
+                    for(data in arrayListSensorData){
+                        val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
+                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
+
+                        if (createdAt>start){
+                            val value = data.amonia
+                            records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
+                        }
+                        if (createdAt>end){
+                            break
+                        }
                     }
+                    _sensorRecordInRange.postValue(records)
+
                 }
-                _sensorRecordInRange.postValue(records)
-            }.addOnFailureListener {
-                it.printStackTrace()
             }
 
+            override fun onFailure(call: Call<GraphData>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
     }
+//        val dbRef =
+//            Firebase.database("https://monitoring-kjabb-default-rtdb.asia-southeast1.firebasedatabase.app/")
+//                .getReference("sensors/${sensor.id}/records")
+//
+//        dbRef.orderByKey().startAfter(start.toString()).endBefore(end.toString())
+//            .get().addOnSuccessListener { result ->
+//                val records = arrayListOf<Sensor>()
+//                Log.d("DetailSensorViewModel", result.childrenCount.toString())
+//                for (document in result.children) {
+//                    try {
+//                        val id = sensor.id
+//                        val name = sensor.name
+//                        val value = document.child("value").value.toString()
+//                        val unit = sensor.unit
+//                        val createdAt =
+//                            Timestamp(
+//                                Date(
+//                                    document.child("created_at").value.toString().toLong() * 1000
+//                                )
+//                            )
+//                        val urlIcon = sensor.urlIcon
+//                        records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
+//                    } catch (e: Exception) {
+//                        Log.d(
+//                            AmmoniaFragmentViewModel::class.java.simpleName,
+//                            "getSensorRecordInRange: ${e.message.toString()}"
+//                        )
+//                    }
+//                }
+//                _sensorRecordInRange.postValue(records)
+//            }.addOnFailureListener {
+//                it.printStackTrace()
+//            }
+//
+//    }
 
     fun getThresholdsData(sensor: Sensor) {
         RetrofitClientSensor.instance.getPosts().enqueue(object : Callback<ArrayList<SensorModel>> {
@@ -165,11 +204,11 @@ class AmmoniaFragmentViewModel : ViewModel() {
                 call: Call<ArrayList<SensorModel>>,
                 response: Response<ArrayList<SensorModel>>
             ){
-                response.body().let {
-                    val sensorModel : ArrayList<SensorModel>? = it
+                response.body()?.let {
+                    val sensorModel : ArrayList<SensorModel> = it
                     val dataThreshold = mapOf(
-                        "upper" to sensorModel?.get(sensor.id.toInt())?.batas_atas.toString(),
-                        "lower" to sensorModel?.get(sensor.id.toInt())?.batas_bawah.toString(),
+                        "upper" to sensorModel?.get(sensor.id.toInt()).batas_atas,
+                        "lower" to sensorModel?.get(sensor.id.toInt()).batas_bawah,
                     )
                     _thresholds.postValue(dataThreshold)
 
