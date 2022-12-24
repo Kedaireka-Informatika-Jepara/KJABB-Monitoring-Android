@@ -190,10 +190,10 @@ class TdsFragment : Fragment() {
     private fun getLatestSensor(): Sensor {
         val sensor: Sensor
 
-        val id = "1"
-        val name = "Turbidity"
+        val id = "5"
+        val name = "Zat Padat Terlarut"
         val value = "6.3"
-        val unit = "NTU"
+        val unit = "ppm"
         val createdAt = Timestamp(Date())
         val iconUrl = "url"
 

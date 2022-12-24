@@ -25,6 +25,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.R
+import com.kedaireka.monitoringkjabb.databinding.FragmentAmmoniaBinding
 import com.kedaireka.monitoringkjabb.databinding.FragmentRaindropsBinding
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
@@ -35,7 +36,7 @@ import java.util.concurrent.Executors
 
 class RaindropsFragment : Fragment() {
 
-    private lateinit var raindropsFragmentViewModel: RaindropsFragmentViewModel
+    private lateinit var randropsFragmentViewModel: RaindropsFragmentViewModel
     private lateinit var recordsInRange: ArrayList<Sensor>
 
     private var _binding: FragmentRaindropsBinding? = null
@@ -49,41 +50,39 @@ class RaindropsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        raindropsFragmentViewModel = ViewModelProvider(this)[RaindropsFragmentViewModel::class.java]
+        randropsFragmentViewModel = ViewModelProvider(this)[RaindropsFragmentViewModel::class.java]
 
         _binding = FragmentRaindropsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val sensor = getLatestSensor()
-        raindropsFragmentViewModel.getDORecord(sensor)
-        raindropsFragmentViewModel.getThresholdsData(sensor)
+        randropsFragmentViewModel.getDORecord(sensor)
+        randropsFragmentViewModel.getThresholdsData(sensor)
 
-        raindropsFragmentViewModel.avg.observe(viewLifecycleOwner, { result ->
+        randropsFragmentViewModel.avg.observe(viewLifecycleOwner) { result ->
             avg = result
-            val value = getString(RAINDROPS_DICT[avg.toInt()]!!)
+            val value = "%.2f ${sensor.unit}".format(result)
             binding.tvAvg.text = value
-        })
+        }
 
-        raindropsFragmentViewModel.max.observe(viewLifecycleOwner, {
+        randropsFragmentViewModel.max.observe(viewLifecycleOwner) {
             max = it
-            val value =
-                "Max: ${getString(RAINDROPS_DICT[max.toInt()]!!)} | Min: ${getString(RAINDROPS_DICT[min.toInt()]!!)}"
+            val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        raindropsFragmentViewModel.min.observe(viewLifecycleOwner, {
+        randropsFragmentViewModel.min.observe(viewLifecycleOwner) {
             min = it
-            val value =
-                "Max: ${getString(RAINDROPS_DICT[max.toInt()]!!)} | Min: ${getString(RAINDROPS_DICT[min.toInt()]!!)}"
+            val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
             binding.tvMaxMin.text = value
-        })
+        }
 
-        raindropsFragmentViewModel.records.observe(viewLifecycleOwner, { result ->
+        randropsFragmentViewModel.records.observe(viewLifecycleOwner) { result ->
             val lineChart = binding.lineChart
             setDOLineChart(lineChart, result)
-        })
+        }
 
-        raindropsFragmentViewModel.thresholds.observe(viewLifecycleOwner, {
+        randropsFragmentViewModel.thresholds.observe(viewLifecycleOwner) {
             val upper = it["upper"]?.toDouble()!!
             val lower = it["lower"]?.toDouble()!!
 
@@ -93,9 +92,9 @@ class RaindropsFragment : Fragment() {
                 binding.tvStatus.text = getString(R.string.status_bad)
                 binding.cardStatus.setCardBackgroundColor(resources.getColor(R.color.yellow))
             }
-        })
+        }
 
-        raindropsFragmentViewModel.isLoading.observe(viewLifecycleOwner, {
+        randropsFragmentViewModel.isLoading.observe(viewLifecycleOwner) {
             if (it) {
                 binding.pbLoading.visibility = View.VISIBLE
                 binding.lineChart.visibility = View.INVISIBLE
@@ -103,7 +102,7 @@ class RaindropsFragment : Fragment() {
                 binding.pbLoading.visibility = View.GONE
                 binding.lineChart.visibility = View.VISIBLE
             }
-        })
+        }
 
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
@@ -144,12 +143,13 @@ class RaindropsFragment : Fragment() {
                 // Generate Data
                 Toast.makeText(requireContext(), "Saving Data", Toast.LENGTH_SHORT).show()
 
-                raindropsFragmentViewModel.getSensorRecordInRange(
+                randropsFragmentViewModel.getSensorRecordInRange(
                     sensor,
                     time.first / 1000,
                     time.second / 1000
                 )
-                raindropsFragmentViewModel.sensorRecordInRange.observe(requireActivity(), {
+
+                randropsFragmentViewModel.sensorRecordInRange.observe(requireActivity()) {
                     recordsInRange = it
 
                     if (recordsInRange.isNotEmpty()) {
@@ -178,7 +178,7 @@ class RaindropsFragment : Fragment() {
                             .show()
                     }
 
-                })
+                }
             }
 
             dateRangePicker.show(requireActivity().supportFragmentManager, "DetailSensorActivity")
@@ -190,10 +190,10 @@ class RaindropsFragment : Fragment() {
     private fun getLatestSensor(): Sensor {
         val sensor: Sensor
 
-        val id = "raindrops"
-        val name = "Raindrops"
+        val id = "6"
+        val name = "Curah Hujan"
         val value = "6.3"
-        val unit = ""
+        val unit = "mm"
         val createdAt = Timestamp(Date())
         val iconUrl = "url"
 
@@ -253,7 +253,7 @@ class RaindropsFragment : Fragment() {
             )
         } else {
             Toast.makeText(
-                requireContext(),
+                requireActivity(),
                 getString(R.string.permission_already_granted),
                 Toast.LENGTH_SHORT
             ).show()
