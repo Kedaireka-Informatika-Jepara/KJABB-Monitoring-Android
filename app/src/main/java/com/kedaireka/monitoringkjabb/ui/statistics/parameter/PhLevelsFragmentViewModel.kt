@@ -68,7 +68,6 @@ class PhLevelsFragmentViewModel : ViewModel() {
                     for (data in arrayListSensorData) {
                         val value = data.ph.toDouble()
                         counter += value
-                        counter += value
                         if (min > value){
                             min = value
                         }
