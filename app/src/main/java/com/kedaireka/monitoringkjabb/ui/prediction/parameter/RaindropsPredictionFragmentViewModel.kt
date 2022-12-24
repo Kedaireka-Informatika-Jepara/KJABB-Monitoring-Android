@@ -1,6 +1,5 @@
 package com.kedaireka.monitoringkjabb.ui.prediction.parameter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.model.SensorModel
-import com.kedaireka.monitoringkjabb.ui.statistics.parameter.AmmoniaFragmentViewModel
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor
@@ -20,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class SuhuPredictionFragmentViewModel : ViewModel() {
+class RaindropsPredictionFragmentViewModel : ViewModel() {
 
     private val _records = MutableLiveData<ArrayList<Sensor>>()
     val records: LiveData<ArrayList<Sensor>> = _records
@@ -56,6 +54,8 @@ class SuhuPredictionFragmentViewModel : ViewModel() {
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
                     var tempVal = arrayListSensorData[0].ph.toDouble()
+                    var tempValLast = arrayListSensorData.last().ph.toDouble()
+                    val dataGrowthRate = 1 + ((tempValLast - tempVal) / tempVal)/10
                     var min = tempVal
                     var max = tempVal
                     val id = sensor.id
@@ -64,7 +64,7 @@ class SuhuPredictionFragmentViewModel : ViewModel() {
                     val unit = sensor.unit
 
                     for (data in arrayListSensorData) {
-                        val value = data.ph.toDouble()
+                        val value = data.ph.toDouble()*dataGrowthRate
                         counter += value
                         if (min > value){
                             min = value
@@ -73,9 +73,10 @@ class SuhuPredictionFragmentViewModel : ViewModel() {
                             max = value
                         }
 
-                        val createdAt = ApiSensorData().dateConverter(data.tanggal, data.waktu)
+                        val createdAt = ApiSensorData().dateConverterPred(data.tanggal, data.waktu)
                         records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
+                    records.reverse()
                     val avg: Double = counter / records.size
 
                     _isLoading.postValue(false)
@@ -108,8 +109,8 @@ class SuhuPredictionFragmentViewModel : ViewModel() {
                     val urlIcon = sensor.urlIcon
                     for(data in arrayListSensorData){
                         val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
-                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
-                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
+//                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,createdAt.toString())
+//                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
 
                         if (createdAt>=start){
                             val value = data.ph

@@ -20,7 +20,6 @@ import kotlin.collections.ArrayList
 
 class TurbidityPredictionFragmentViewModel : ViewModel() {
 
-
 private val _records = MutableLiveData<ArrayList<Sensor>>()
 val records: LiveData<ArrayList<Sensor>> = _records
 

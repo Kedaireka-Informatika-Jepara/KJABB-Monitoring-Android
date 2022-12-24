@@ -53,8 +53,8 @@ class PhLevelsPredictionFragmentViewModel : ViewModel() {
                     val records = arrayListOf<Sensor>()
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
-                    var tempVal = arrayListSensorData[0].amonia.toDouble()
-                    var tempValLast = arrayListSensorData.last().amonia.toDouble()
+                    var tempVal = arrayListSensorData[0].ph.toDouble()
+                    var tempValLast = arrayListSensorData.last().ph.toDouble()
                     val dataGrowthRate = 1 + ((tempValLast - tempVal) / tempVal)/10
                     var min = tempVal
                     var max = tempVal
@@ -64,7 +64,7 @@ class PhLevelsPredictionFragmentViewModel : ViewModel() {
                     val unit = sensor.unit
 
                     for (data in arrayListSensorData) {
-                        val value = data.amonia.toDouble()*dataGrowthRate
+                        val value = data.ph.toDouble()*dataGrowthRate
                         counter += value
                         if (min > value){
                             min = value
@@ -113,7 +113,7 @@ class PhLevelsPredictionFragmentViewModel : ViewModel() {
 //                        Log.d(AmmoniaFragmentViewModel::class.java.simpleName,start.toString())
 
                         if (createdAt>=start){
-                            val value = data.amonia
+                            val value = data.ph
                             records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
                         }
                         if (createdAt>end){

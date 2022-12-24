@@ -1,11 +1,39 @@
 package com.kedaireka.monitoringkjabb.ui.prediction.parameter
 
-import android.os.Bundle
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.*
+import android.provider.Settings
+import android.text.format.DateFormat
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.util.Pair
+import androidx.lifecycle.ViewModelProvider
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.R
+import com.kedaireka.monitoringkjabb.databinding.FragmentTdsBinding
+import com.kedaireka.monitoringkjabb.databinding.FragmentTdsPredictionBinding
+import com.kedaireka.monitoringkjabb.model.Sensor
+import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
+import com.kedaireka.monitoringkjabb.ui.statistics.parameter.TdsFragmentViewModel
+import com.kedaireka.monitoringkjabb.utils.ExcelUtils
+import java.util.*
+import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,43 +46,228 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class TdsPredictionFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var tdsFragmentViewModel: TdsPredictionFragmentViewModel
+    private lateinit var recordsInRange: ArrayList<Sensor>
+
+    private var _binding: FragmentTdsPredictionBinding? = null
+    private val binding get() = _binding!!
+
+    private var max = 0.0
+    private var min = 0.0
+    private var avg = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tds_prediction, container, false)
-    }
+    ): View {
+        tdsFragmentViewModel = ViewModelProvider(this)[TdsPredictionFragmentViewModel::class.java]
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TdsPredictionFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TdsPredictionFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        _binding = FragmentTdsPredictionBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+        val sensor = getLatestSensor()
+        tdsFragmentViewModel.getDORecord(sensor)
+        tdsFragmentViewModel.getThresholdsData(sensor)
+
+        tdsFragmentViewModel.avg.observe(viewLifecycleOwner) { result ->
+            avg = result
+            val value = "%.2f ${sensor.unit}".format(result)
+            binding.tvAvg.text = value
+        }
+
+        tdsFragmentViewModel.max.observe(viewLifecycleOwner) {
+            max = it
+            val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
+            binding.tvMaxMin.text = value
+        }
+
+        tdsFragmentViewModel.min.observe(viewLifecycleOwner) {
+            min = it
+            val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
+            binding.tvMaxMin.text = value
+        }
+
+        tdsFragmentViewModel.records.observe(viewLifecycleOwner) { result ->
+            val lineChart = binding.lineChart
+            setDOLineChart(lineChart, result)
+        }
+
+        tdsFragmentViewModel.thresholds.observe(viewLifecycleOwner) {
+            val upper = it["upper"]?.toDouble()!!
+            val lower = it["lower"]?.toDouble()!!
+
+            if (avg in lower..upper) {
+                binding.tvStatus.text = getString(R.string.status_good)
+            } else {
+                binding.tvStatus.text = getString(R.string.status_bad)
+                binding.cardStatus.setCardBackgroundColor(resources.getColor(R.color.yellow))
+            }
+        }
+
+        tdsFragmentViewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.pbLoading.visibility = View.VISIBLE
+                binding.lineChart.visibility = View.INVISIBLE
+            } else {
+                binding.pbLoading.visibility = View.GONE
+                binding.lineChart.visibility = View.VISIBLE
+            }
+        }
+
+        val executor = Executors.newSingleThreadExecutor()
+        val handler = Handler(Looper.getMainLooper())
+        binding.button.setOnClickListener {
+            // Check storage permission before download
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                checkPermission(
+                    Manifest.permission.MANAGE_EXTERNAL_STORAGE,
+                    DetailSensorActivity.MANAGE_STORAGE_PERMISSION_CODE
+                )
+
+                if (!Environment.isExternalStorageManager()) {
+                    val intent = Intent()
+                    intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+                    val uri = Uri.fromParts("package", requireContext().packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+
+            } else {
+                checkPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    DetailSensorActivity.STORAGE_PERMISSION_CODE
+                )
+            }
+
+            val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText("Select dates")
+                .setSelection(
+                    Pair(
+                        MaterialDatePicker.thisMonthInUtcMilliseconds(),
+                        MaterialDatePicker.todayInUtcMilliseconds()
+                    )
+                )
+                .build()
+
+            dateRangePicker.addOnPositiveButtonClickListener { time ->
+                // Generate Data
+                Toast.makeText(requireContext(), "Saving Data", Toast.LENGTH_SHORT).show()
+
+                tdsFragmentViewModel.getSensorRecordInRange(
+                    sensor,
+                    time.first / 1000,
+                    time.second / 1000
+                )
+
+                tdsFragmentViewModel.sensorRecordInRange.observe(requireActivity()) {
+                    recordsInRange = it
+
+                    if (recordsInRange.isNotEmpty()) {
+                        executor.execute {
+                            val workbook = ExcelUtils.createWorkbook(recordsInRange)
+                            ExcelUtils.createExcel(
+                                requireContext().applicationContext,
+                                workbook,
+                                sensor
+                            )
+
+                            handler.post {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.data_saved),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.saving_failed),
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+
                 }
             }
+
+            dateRangePicker.show(requireActivity().supportFragmentManager, "DetailSensorActivity")
+        }
+
+        return root
+    }
+
+    private fun getLatestSensor(): Sensor {
+        val sensor: Sensor
+
+        val id = "5"
+        val name = "Zat Padat Terlarut"
+        val value = "6.3"
+        val unit = "ppm"
+        val createdAt = Timestamp(Date())
+        val iconUrl = "url"
+
+        sensor = Sensor(id, name, value, unit, createdAt, iconUrl)
+        return sensor
+    }
+
+    private fun setDOLineChart(lineChart: LineChart, records: ArrayList<Sensor>) {
+
+        val xValue = ArrayList<String>()
+        val lineEntry = ArrayList<Entry>()
+        val size = records.size
+
+        for (i in 0 until size) {
+            val df = DateFormat.format("ha", records[size - i - 1].created_at.toDate())
+
+            xValue.add(df.toString())
+            lineEntry.add(Entry(i.toFloat(), records[size - i - 1].value.toFloat()))
+        }
+
+        val lineDataSet = LineDataSet(lineEntry, records[0].name)
+        lineDataSet.circleColors =
+            mutableListOf(
+                ContextCompat.getColor(
+                    this.requireContext().applicationContext,
+                    R.color.grey_light
+                )
+            )
+        lineDataSet.color = resources.getColor(R.color.blue_primary)
+
+        val xAxis = lineChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setLabelCount(xValue.size, true)
+        xAxis.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return xValue[value.toInt()]
+            }
+        }
+
+        val data = LineData(lineDataSet)
+        lineChart.data = data
+        lineChart.setScaleEnabled(false)
+
+    }
+
+    private fun checkPermission(permission: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                permission
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            // Requesting permission
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(permission),
+                requestCode
+            )
+        } else {
+            Toast.makeText(
+                requireActivity(),
+                getString(R.string.permission_already_granted),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }
