@@ -7,9 +7,11 @@ import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorData
+import com.kedaireka.monitoringkjabb.model.SensorModel
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -211,16 +213,23 @@ class DetailSensorViewModel : ViewModel() {
     }
 
     fun getThresholdsData(sensor: Sensor) {
-        val dbRef = DATABASE_REFERENCE
-        dbRef.child("sensors/${sensor.id}/thresholds").get().addOnSuccessListener { result ->
-            val dataThreshold = mapOf(
-                "upper" to result.child("upper").value.toString(),
-                "lower" to result.child("lower").value.toString(),
-            )
-
-            _thresholds.postValue(dataThreshold)
-        }.addOnFailureListener {
-            it.printStackTrace()
-        }
+        RetrofitClientSensor.instance.getPosts().enqueue(object : Callback<ArrayList<SensorModel>> {
+            override
+            fun onResponse(
+                call: Call<ArrayList<SensorModel>>,
+                response: Response<ArrayList<SensorModel>>
+            ){
+                response.body()?.let {
+                    val sensorModel : ArrayList<SensorModel> = it
+                    val dataThreshold = mapOf(
+                        "upper" to sensorModel?.get(sensor.id.toInt()-1).batas_atas,
+                        "lower" to sensorModel?.get(sensor.id.toInt()-1).batas_bawah,
+                    )
+                    _thresholds.postValue(dataThreshold)
+                }
+            }
+            override fun onFailure(call: Call<ArrayList<SensorModel>>, t: Throwable) {
+            }
+        })
     }
 }

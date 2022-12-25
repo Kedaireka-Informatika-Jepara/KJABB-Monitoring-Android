@@ -362,6 +362,7 @@ class DetailSensorActivity : AppCompatActivity() {
                     )
 
                     val dbRef = DATABASE_REFERENCE
+
                     dbRef.child("sensors/${data.id}/thresholds").setValue(threshold)
                         .addOnSuccessListener {
                             Toast.makeText(

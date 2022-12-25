@@ -63,24 +63,119 @@ class DailyHistoryViewModel : ViewModel() {
                     val urlIcon = sensor.urlIcon
 
                     val stopAt = calendar.timeInMillis/1000
-                    for(data in arrayListSensorData.reversed()){
-                        val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
-                        if (stopAt > createdAt){
-                            break
-                        }
-                        val value = data.turbidity.toDouble()
-                        counter += value
-                        if (min > value) {
-                            min = value
-                        }
-                        if (max < value){
-                            max = value
-                        }
-                        records.add(Sensor(id, name, value.toString(), unit, Timestamp(Date(createdAt*1000)), urlIcon))
+//                    Main ALgorithm
+                    if (id.toInt() == 1){
+                        for(data in arrayListSensorData.reversed()){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+                            if (stopAt > createdAt){
+                                break
+                            }
+                            val value = data.turbidity.toDouble()
+                            counter += value
+                            if (min > value) {
+                                min = value
+                            }
+                            if (max < value){
+                                max = value
+                            }
+                            records.add(Sensor(id, name, value.toString(), unit, Timestamp(Date(createdAt*1000)), urlIcon))
 
+                        }
                     }
+                    else if (id.toInt() == 2){
+                        for(data in arrayListSensorData.reversed()){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+                            if (stopAt > createdAt){
+                                break
+                            }
+                            val value = data.amonia.toDouble()
+                            counter += value
+                            if (min > value) {
+                                min = value
+                            }
+                            if (max < value){
+                                max = value
+                            }
+                            records.add(Sensor(id, name, value.toString(), unit, Timestamp(Date(createdAt*1000)), urlIcon))
+
+                        }
+                    }
+                    else if (id.toInt() == 3){
+                        for(data in arrayListSensorData.reversed()){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+                            if (stopAt > createdAt){
+                                break
+                            }
+                            val value = data.suhu.toDouble()
+                            counter += value
+                            if (min > value) {
+                                min = value
+                            }
+                            if (max < value){
+                                max = value
+                            }
+                            records.add(Sensor(id, name, value.toString(), unit, Timestamp(Date(createdAt*1000)), urlIcon))
+
+                        }
+                    }
+                    else if (id.toInt() == 4){
+                        for(data in arrayListSensorData.reversed()){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+                            if (stopAt > createdAt){
+                                break
+                            }
+                            val value = data.ph.toDouble()
+                            counter += value
+                            if (min > value) {
+                                min = value
+                            }
+                            if (max < value){
+                                max = value
+                            }
+                            records.add(Sensor(id, name, value.toString(), unit, Timestamp(Date(createdAt*1000)), urlIcon))
+
+                        }
+                    }
+                    else if(id.toInt() == 5){
+                        for(data in arrayListSensorData.reversed()){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+                            if (stopAt > createdAt){
+                                break
+                            }
+                            val value = data.tds.toDouble()
+                            counter += value
+                            if (min > value) {
+                                min = value
+                            }
+                            if (max < value){
+                                max = value
+                            }
+                            records.add(Sensor(id, name, value.toString(), unit, Timestamp(Date(createdAt*1000)), urlIcon))
+
+                        }
+                    }
+                    else {
+                        for(data in arrayListSensorData.reversed()){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+                            if (stopAt > createdAt){
+                                break
+                            }
+                            val value = data.curah_hujan.toDouble()
+                            counter += value
+                            if (min > value) {
+                                min = value
+                            }
+                            if (max < value){
+                                max = value
+                            }
+                            records.add(Sensor(id, name, value.toString(), unit, Timestamp(Date(createdAt*1000)), urlIcon))
+
+                        }
+                    }
+
                     val avg: Double = counter / records.size
 //                    Post Data
+                    records.reverse()
                     _records.postValue(records)
                     _min.postValue(min)
                     _max.postValue(max)
