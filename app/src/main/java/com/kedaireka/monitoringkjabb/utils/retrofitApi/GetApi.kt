@@ -3,6 +3,7 @@ package com.kedaireka.monitoringkjabb.utils.retrofitApi
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.annotations.SerializedName
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.model.SensorModel
@@ -11,7 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
+import retrofit2.http.*
 
 
 interface Api {
@@ -84,4 +85,29 @@ fun getSensorApi() : ArrayList<SensorModel> {
         }
     })
     return dataResponse
+}
+
+
+interface ApiSensorUpdate {
+    @FormUrlEncoded
+    @POST("api/data/sensoredit")
+    fun updateSensor(
+        @Field("id_sensor") id_sensor: String,
+//        @Field("data") data: Array<String>,
+        @Field("nama_sensor") nama_sensor: String,
+        @Field("batas_bawah") batas_bawah: String,
+        @Field("batas_atas") batas_atas: String
+    ): Call<SensorModel>
+}
+object RetrofitClientSensorUpdate {
+    private const val BASE_URL = "https://monitoring.cemebsa.com/"
+
+    val instance: ApiSensorUpdate by lazy {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        retrofit.create(ApiSensorUpdate::class.java)
+    }
 }
