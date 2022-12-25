@@ -60,7 +60,7 @@ class DashboardViewModel : ViewModel() {
                             arrayListSensorData.curah_hujan,
                         )
                         val sensorDataUnit: Array<String> =
-                            arrayOf("°C", "mg/l", "", "pH", "mg/l", "NTU")
+                            arrayOf("NTU", "mg/l", "°C", "", "ppm", "mm")
                         val sensorDataDate = ApiSensorData().dateConverter(
                             arrayListSensorData.tanggal,
                             arrayListSensorData.waktu,
