@@ -36,7 +36,6 @@ import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorModel
 import com.kedaireka.monitoringkjabb.ui.history.HistorySensorActivity
 import com.kedaireka.monitoringkjabb.utils.ExcelUtils
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.RaindropsMapper.Companion.RAINDROPS_DICT
 import com.kedaireka.monitoringkjabb.utils.RaindropsMapper.Companion.RAINDROPS_ID
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensorUpdate
