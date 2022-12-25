@@ -1,24 +1,19 @@
 package com.kedaireka.monitoringkjabb.ui.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorData
-import com.kedaireka.monitoringkjabb.model.SensorModel
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
-import com.kedaireka.monitoringkjabb.utils.retrofitApi.getDataApi
-import com.kedaireka.monitoringkjabb.utils.retrofitApi.getSensorApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.*
 
 class DetailSensorViewModel : ViewModel() {
@@ -40,49 +35,114 @@ class DetailSensorViewModel : ViewModel() {
     val thresholds = _thresholds
 
     fun getSensorRecordInRange(sensor: Sensor, start: Long, end: Long) {
-//        val databaseRef = ApiSensorData().sensorData
 
+        RetrofitClient.instance.getPosts().enqueue(object : Callback<GraphData> {
+            override fun onResponse(
+                call: Call<GraphData>,
+                response: Response<GraphData>
+            ) {
+                response.body()?.let {
+                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.data)
+                    val records = arrayListOf<Sensor>()
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
-        val dbRef =
-            Firebase.database("https://monitoring-kjabb-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                .getReference("sensors/${sensor.id}/records")
+                    val id = sensor.id
+                    val name = sensor.name
+                    val unit = sensor.unit
+                    val urlIcon = sensor.urlIcon
+                    if (id.toInt() == 1){
+                        for(data in arrayListSensorData){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
 
-        dbRef.orderByKey().startAfter(start.toString()).endBefore(end.toString())
-            .get().addOnSuccessListener { result ->
-                val records = arrayListOf<Sensor>()
-                Log.d("DetailSensorViewModel", result.childrenCount.toString())
-                for (document in result.children) {
-                    try {
-                        val id = sensor.id
-                        val name = sensor.name
-                        val value = document.child("value").value.toString()
-                        val unit = sensor.unit
-                        val createdAt =
-                            Timestamp(
-                                Date(
-                                    document.child("created_at").value.toString().toLong() * 1000
-                                )
-                            )
-                        val urlIcon = sensor.urlIcon
-                        records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
-                    } catch (e: Exception) {
-                        Log.d(DetailSensorViewModel::class.java.simpleName, e.message.toString())
+                            if (createdAt>=start){
+                                val value = data.turbidity
+                                records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
+                            }
+                            if (createdAt>end){
+                                break
+                            }
+                        }
                     }
+                    else if (id.toInt() == 2){
+                        for(data in arrayListSensorData){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+
+                            if (createdAt>=start){
+                                val value = data.amonia
+                                records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
+                            }
+                            if (createdAt>end){
+                                break
+                            }
+                        }
+                    }
+                    else if (id.toInt() == 3){
+                        for(data in arrayListSensorData){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+
+                            if (createdAt>=start){
+                                val value = data.suhu
+                                records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
+                            }
+                            if (createdAt>end){
+                                break
+                            }
+                        }
+                    }
+                    else if (id.toInt() == 4){
+                        for(data in arrayListSensorData){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+
+                            if (createdAt>=start){
+                                val value = data.ph
+                                records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
+                            }
+                            if (createdAt>end){
+                                break
+                            }
+                        }
+                    }
+                    else if (id.toInt() == 5){
+                        for(data in arrayListSensorData){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+
+                            if (createdAt>=start){
+                                val value = data.tds
+                                records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
+                            }
+                            if (createdAt>end){
+                                break
+                            }
+                        }
+                    }
+                    else {
+                        for(data in arrayListSensorData){
+                            val createdAt : Long = inputFormat.parse(data.tanggal + " " + data.waktu).time/1000
+
+                            if (createdAt>=start){
+                                val value = data.curah_hujan
+                                records.add(Sensor(id, name, value, unit, Timestamp(Date(createdAt*1000)), urlIcon))
+                            }
+                            if (createdAt>end){
+                                break
+                            }
+                        }
+                    }
+
+
+                    _sensorRecordInRange.postValue(records)
+
                 }
-                _sensorRecordInRange.postValue(records)
-            }.addOnFailureListener {
-                it.printStackTrace()
             }
 
+            override fun onFailure(call: Call<GraphData>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     fun getSensorRecords(sensor: Sensor) {
         _isLoading.value = true
-
-
-//        val graphData : ArrayList<SensorData> = getDataApi()
-//        val sensorModel : ArrayList<SensorModel> = getSensorApi()
-
 
         RetrofitClient.instance.getPosts().enqueue(object : Callback<GraphData> {
             override fun onResponse(
@@ -91,7 +151,7 @@ class DetailSensorViewModel : ViewModel() {
             ) {
                 response.body()?.let {
                     val records = arrayListOf<Sensor>()
-                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.takeLast(10))
+                    val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
                     val id = sensor.id
                     val name = sensor.name
                     val urlIcon = sensor.urlIcon
@@ -139,8 +199,6 @@ class DetailSensorViewModel : ViewModel() {
                             records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
                         }
                     }
-                    records.reverse()
-
                     _isLoading.postValue(false)
                     _dataSensor.postValue(records)
                 }
@@ -150,39 +208,6 @@ class DetailSensorViewModel : ViewModel() {
                 TODO("Not yet implemented")
             }
         })
-
-//        val dbRef = DATABASE_REFERENCE
-//        dbRef.child("sensors/${sensor.id}/records").orderByKey().limitToLast(10).get()
-//            .addOnSuccessListener { result ->
-//
-//                val records = arrayListOf<Sensor>()
-//                for (document in result.children) {
-//                    try {
-//                        val id = sensor.id
-//                        val name = sensor.name
-//                        val value = document.child("value").value.toString()
-//                        val unit = sensor.unit
-//                        val createdAt =
-//                            Timestamp(
-//                                Date(
-//                                    document.child("created_at").value.toString().toLong() * 1000
-//                                )
-//                            )
-//                        val urlIcon = sensor.urlIcon
-//
-//                        records.add(Sensor(id, name, value, unit, createdAt, urlIcon))
-//                    } catch (e: Exception) {
-//                        Log.d(DetailSensorViewModel::class.java.simpleName, e.message.toString())
-//                    }
-//                }
-//                records.reverse()
-//
-//                _isLoading.postValue(false)
-//                _dataSensor.postValue(records)
-//            }
-//            .addOnFailureListener {
-//                it.printStackTrace()
-//            }
     }
 
     fun getThresholdsData(sensor: Sensor) {

@@ -1,6 +1,7 @@
 package com.kedaireka.monitoringkjabb.adapter
 
 import android.content.Intent
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,8 @@ import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
 import com.kedaireka.monitoringkjabb.utils.RaindropsMapper.Companion.RAINDROPS_DICT
 import com.kedaireka.monitoringkjabb.utils.RaindropsMapper.Companion.RAINDROPS_ID
+import java.sql.Date
+import java.sql.Timestamp
 
 class ListSensorAdapter(
     private val listSensor: ArrayList<Sensor>,
@@ -26,6 +29,7 @@ class ListSensorAdapter(
         var tvName: TextView = itemView.findViewById(R.id.tv_item_name)
         var tvValue: TextView = itemView.findViewById(R.id.tv_item_value)
         var imgIcon: ImageView = itemView.findViewById(R.id.iv_item_icon)
+        var cardCreatedAt: TextView = itemView.findViewById(R.id.tv_created_at)
     }
 
     override fun onCreateViewHolder(
@@ -38,12 +42,17 @@ class ListSensorAdapter(
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val (id, name, value, unit, _, urlIcon) = listSensor[position]
+        val (id, name, value, unit, createdAtDouble, urlIcon) = listSensor[position]
         val threshold: Map<String, Double> = listThreshold[position]
 
         val upper = threshold["upper"]
         val lower = threshold["lower"]
         var displayValue = "$value $unit"
+
+        val createdAt = DateFormat.format("yyyy-MM-dd HH:mm:ss",createdAtDouble.toDate())
+        var displayValueCreatedAt = "Last Updated: $createdAt"
+        holder.cardCreatedAt.text = displayValueCreatedAt
+
 
         if (value == "null") {
             displayValue = "N/A"
