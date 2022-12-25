@@ -33,11 +33,15 @@ import com.google.android.material.textfield.TextInputLayout
 import com.kedaireka.monitoringkjabb.R
 import com.kedaireka.monitoringkjabb.databinding.ActivityDetailSensorBinding
 import com.kedaireka.monitoringkjabb.model.Sensor
+import com.kedaireka.monitoringkjabb.model.SensorModel
 import com.kedaireka.monitoringkjabb.ui.history.HistorySensorActivity
 import com.kedaireka.monitoringkjabb.utils.ExcelUtils
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.RaindropsMapper.Companion.RAINDROPS_DICT
 import com.kedaireka.monitoringkjabb.utils.RaindropsMapper.Companion.RAINDROPS_ID
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensorUpdate
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.concurrent.Executors
 
 
@@ -360,27 +364,49 @@ class DetailSensorActivity : AppCompatActivity() {
                         "upper" to upperValueInDouble,
                         "lower" to lowerValueInDouble,
                     )
-
-                    val dbRef = DATABASE_REFERENCE
-
-                    dbRef.child("sensors/${data.id}/thresholds").setValue(threshold)
-                        .addOnSuccessListener {
+                    RetrofitClientSensorUpdate.instance.updateSensor(data.id, data.name, lowerValue, upperValue).enqueue(object :
+                        Callback<SensorModel> {
+                        override fun onResponse(
+                            call: Call<SensorModel>,
+                            response: Response<SensorModel>
+                        ) {
                             Toast.makeText(
                                 this@DetailSensorActivity,
                                 getString(R.string.data_saved),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                        .addOnFailureListener {
+
+                        override fun onFailure(call: Call<SensorModel>, t: Throwable) {
                             Toast.makeText(
                                 this@DetailSensorActivity,
-                                getString(R.string.failed),
+                                getString(R.string.data_saved),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
 
-
+                    })
                     setThresholdStatus(upperValue, lowerValue, data)
+//
+//                    val dbRef = DATABASE_REFERENCE
+//
+//                    dbRef.child("sensors/${data.id}/thresholds").setValue(threshold)
+//                        .addOnSuccessListener {
+//                            Toast.makeText(
+//                                this@DetailSensorActivity,
+//                                getString(R.string.data_saved),
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//                        .addOnFailureListener {
+//                            Toast.makeText(
+//                                this@DetailSensorActivity,
+//                                getString(R.string.failed),
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//
+
                 }
             }.show()
     }
