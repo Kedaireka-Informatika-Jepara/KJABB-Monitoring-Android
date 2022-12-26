@@ -11,7 +11,7 @@ import com.kedaireka.monitoringkjabb.databinding.FragmentPredictionBinding
 
 private val parameterArray = arrayOf(
     "Turbidity",
-    "Amonia",
+    "CO2",
     "Suhu",
     "pH Level",
     "Zat Padat Terlarut",
