@@ -14,6 +14,7 @@ data class SensorData(
     val id: String,
     val tanggal: String,
     val suhu: String,
+    @SerializedName("co2")
     val amonia: String,
     val curah_hujan: String,
     val ph: String,
