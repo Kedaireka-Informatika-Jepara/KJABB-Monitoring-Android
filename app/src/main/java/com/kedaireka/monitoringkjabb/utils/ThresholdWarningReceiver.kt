@@ -13,9 +13,20 @@ import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.R
+import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
+import com.kedaireka.monitoringkjabb.model.SensorData
+import com.kedaireka.monitoringkjabb.model.SensorModel
 import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.getSensorApi
+import org.apache.poi.ss.util.DateFormatConverter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 class ThresholdWarningReceiver : BroadcastReceiver() {
@@ -111,43 +122,84 @@ class ThresholdWarningReceiver : BroadcastReceiver() {
     private fun getSensorsData(context: Context, notificationId: Int) {
 
         Log.d("ThresholdWarning", "Fetching Data")
-
-        val databaseRef = DATABASE_REFERENCE
-        databaseRef.child("sensors").get().addOnSuccessListener { result ->
-            val sensorData = arrayListOf<Sensor>()
-            val thresholdData = arrayListOf<Map<String, Double>>()
-
-            for (sensor in result.children) {
-                val id = sensor.key!!
-                val name = sensor.child("data/name").value.toString()
-                val value = sensor.child("records").children.last().child("value").value.toString()
-                val unit = sensor.child("data/unit").value.toString()
-                val createdAt =
-                    sensor.child("records").children.last().child("created_at").value.toString()
-                val urlIcon = sensor.child("data/url_icon").value.toString()
-
-                val createdAtTimestamp = Timestamp(Date(createdAt.toLong() * 1000))
-                sensorData.add(Sensor(id, name, value, unit, createdAtTimestamp, urlIcon))
-
-                val upper = sensor.child("thresholds/upper").value.toString().toDouble()
-                val lower = sensor.child("thresholds/lower").value.toString().toDouble()
-
-                thresholdData.add(hashMapOf("upper" to upper, "lower" to lower))
-            }
-
-            Log.d("ThresholdWarning", "${sensorData.size}")
-
-            for (i in sensorData.indices) {
-                val upper = thresholdData[i]["upper"]!!
-                val lower = thresholdData[i]["lower"]!!
-                val value = sensorData[i].value.toDouble()
-
-                if (value !in lower..upper) {
-                    showAlarmNotification(context, notificationId, sensorData[i], thresholdData[i])
-                }
-            }
+        val sensorModel = getSensorApi()
+        val thresholdData = arrayListOf<Map<String, Double>>()
+        for (i in 0 until 6){
+            thresholdData.add(hashMapOf("upper" to sensorModel[i].batas_atas.toDouble(), "lower" to sensorModel[i].batas_bawah.toDouble()))
         }
 
+        RetrofitClient.instance.getPosts().enqueue(object : Callback<GraphData> {
+            override fun onResponse(
+                call: Call<GraphData>,
+                response: Response<GraphData>
+            ) {
+                response.body()?.let {
 
+                    val sensorData = ArrayList<Sensor>()
+                    val lastData = it.data.last()
+                    val createdAt = ApiSensorData().dateConverter(lastData.tanggal, lastData.waktu)
+                    sensorData.add(Sensor("1", "Turbidity", lastData.turbidity, "NTU", createdAt, ""))
+                    sensorData.add(Sensor("2", "Amonia", lastData.amonia, "mg/l", createdAt, ""))
+                    sensorData.add(Sensor("3", "Suhu", lastData.suhu, "C", createdAt, ""))
+                    sensorData.add(Sensor("4", "pH", lastData.ph, "", createdAt, ""))
+                    sensorData.add(Sensor("5", "Tds", lastData.tds, "ppm", createdAt, ""))
+                    sensorData.add(Sensor("6", "Curah Hujan", lastData.curah_hujan, "mm", createdAt, ""))
+                    for (i in sensorData.indices) {
+                        val upper = thresholdData[i]["upper"]!!
+                        val lower = thresholdData[i]["lower"]!!
+                        val value = sensorData[i].value.toDouble()
+
+                        if (value !in lower..upper) {
+                            showAlarmNotification(
+                                context,
+                                notificationId,
+                                sensorData[i],
+                                thresholdData[i]
+                            )
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<GraphData>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+
+//        val databaseRef = DATABASE_REFERENCE
+//        databaseRef.child("sensors").get().addOnSuccessListener { result ->
+//            val sensorData = arrayListOf<Sensor>()
+//            val thresholdData = arrayListOf<Map<String, Double>>()
+//
+//            for (sensor in result.children) {
+//                val id = sensor.key!!
+//                val name = sensor.child("data/name").value.toString()
+//                val value = sensor.child("records").children.last().child("value").value.toString()
+//                val unit = sensor.child("data/unit").value.toString()
+//                val createdAt =
+//                    sensor.child("records").children.last().child("created_at").value.toString()
+//                val urlIcon = sensor.child("data/url_icon").value.toString()
+//
+//                val createdAtTimestamp = Timestamp(Date(createdAt.toLong() * 1000))
+//                sensorData.add(Sensor(id, name, value, unit, createdAtTimestamp, urlIcon))
+//
+//                val upper = sensor.child("thresholds/upper").value.toString().toDouble()
+//                val lower = sensor.child("thresholds/lower").value.toString().toDouble()
+//
+//                thresholdData.add(hashMapOf("upper" to upper, "lower" to lower))
+//            }
+//
+//            Log.d("ThresholdWarning", "${sensorData.size}")
+//
+//            for (i in sensorData.indices) {
+//                val upper = thresholdData[i]["upper"]!!
+//                val lower = thresholdData[i]["lower"]!!
+//                val value = sensorData[i].value.toDouble()
+//
+//                if (value !in lower..upper) {
+//                    showAlarmNotification(context, notificationId, sensorData[i], thresholdData[i])
+//                }
+//            }
+//        }
     }
 }

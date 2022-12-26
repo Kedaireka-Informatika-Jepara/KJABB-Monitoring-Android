@@ -55,7 +55,7 @@ class AmmoniaPredictionFragmentViewModel : ViewModel() {
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
                     var tempVal = arrayListSensorData[0].amonia.toDouble()
                     var tempValLast = arrayListSensorData.last().amonia.toDouble()
-                    val dataGrowthRate = 1 + ((tempValLast - tempVal) / tempVal)/10
+                    val dataGrowthRate = 1 + ((tempValLast - tempVal) / tempVal)
                     var min = tempVal
                     var max = tempVal
                     val id = sensor.id
@@ -77,12 +77,12 @@ class AmmoniaPredictionFragmentViewModel : ViewModel() {
                         records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
                     val avg: Double = counter / records.size
-
-                    _isLoading.postValue(false)
                     _records.postValue(records)
                     _min.postValue(min)
                     _max.postValue(max)
                     _avg.postValue(avg)
+                    _isLoading.postValue(false)
+
                 }
             }
 

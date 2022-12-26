@@ -53,9 +53,9 @@ class RaindropsPredictionFragmentViewModel : ViewModel() {
                     val records = arrayListOf<Sensor>()
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
-                    var tempVal = arrayListSensorData[0].ph.toDouble()
-                    var tempValLast = arrayListSensorData.last().ph.toDouble()
-                    val dataGrowthRate = 1 + ((tempValLast - tempVal) / tempVal)/10
+                    var tempVal = arrayListSensorData[0].curah_hujan.toDouble()
+                    var tempValLast = arrayListSensorData.last().curah_hujan.toDouble()
+                    val dataGrowthRate = 1 + ((tempValLast - tempVal) / tempVal)
                     var min = tempVal
                     var max = tempVal
                     val id = sensor.id
@@ -64,7 +64,7 @@ class RaindropsPredictionFragmentViewModel : ViewModel() {
                     val unit = sensor.unit
 
                     for (data in arrayListSensorData) {
-                        val value = data.ph.toDouble()*dataGrowthRate
+                        val value = data.curah_hujan.toDouble()*dataGrowthRate
                         counter += value
                         if (min > value){
                             min = value
@@ -76,14 +76,14 @@ class RaindropsPredictionFragmentViewModel : ViewModel() {
                         val createdAt = ApiSensorData().dateConverterPred(data.tanggal, data.waktu)
                         records.add(Sensor(id, name, value.toString(), unit, createdAt, urlIcon))
                     }
-                    records.reverse()
                     val avg: Double = counter / records.size
 
-                    _isLoading.postValue(false)
                     _records.postValue(records)
                     _min.postValue(min)
                     _max.postValue(max)
                     _avg.postValue(avg)
+                    _isLoading.postValue(false)
+
                 }
             }
 

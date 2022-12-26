@@ -1,5 +1,6 @@
 package com.kedaireka.monitoringkjabb.ui.dashboard
 
+import android.text.format.DateFormat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
+import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientInsertDummy
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.getSensorApi
 import retrofit2.Call
 import retrofit2.Callback
@@ -95,4 +97,41 @@ class DashboardViewModel : ViewModel() {
             },
         )
     }
+
+////    Create Dummy Data for 5 minutes time series
+//private fun createDummyRecords() {
+//    val dummyRecords = ArrayList<SensorData>()
+//    // Water Temperature
+//    for (i in 1..1000) {
+//
+//        val timeInMillis = Date().time - (300000 * i)
+//        val tanggal = DateFormat.format("yyyy-MM-dd", timeInMillis)
+//        val waktu = DateFormat.format("HH:mm:ss", timeInMillis)
+//        val turbidity = Random.nextDouble(0.0, 3.4).toString()
+//        val amonia = Random.nextDouble(0.0, 4.9).toString()
+//        val suhu = Random.nextDouble(24.0, 26.7).toString()
+//        val ph = Random.nextDouble(6.7, 7.7).toString()
+//        val tds = Random.nextDouble(0.0, 500.0).toString()
+//        val curah = Random.nextDouble(0.0, 4950.0).toString()
+//        RetrofitClientInsertDummy.instance.insertDummy(tanggal, suhu, ).enqueue(
+//            object : Callback<SensorData> {
+//                override fun onResponse(call: Call<SensorData>, response: Response<SensorData>) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onFailure(call: Call<SensorData>, t: Throwable) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//            }
+//
+//
+////        val db = DATABASE_REFERENCE
+////        val data = mutableMapOf<String, Any>()
+////        data["created_at"] = timeInMillis / 1000
+////        data["value"] = (Random.nextDouble(20.0, 32.0) * 100).roundToInt() / 100.0
+////
+////        db.child("sensors/water_temperature/records/${timeInMillis / 1000}").setValue(data)
+//    }
+    
 }
