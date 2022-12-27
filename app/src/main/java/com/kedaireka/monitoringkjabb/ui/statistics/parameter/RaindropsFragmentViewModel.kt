@@ -20,6 +20,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.ceil
 
 class RaindropsFragmentViewModel : ViewModel() {
     private val _records = MutableLiveData<ArrayList<Sensor>>()
@@ -64,6 +65,7 @@ class RaindropsFragmentViewModel : ViewModel() {
                     val unit = sensor.unit
 
                     for (data in arrayListSensorData) {
+
                         val value = data.curah_hujan.toDouble()
                         counter += value
                         if (min > value){
@@ -80,9 +82,9 @@ class RaindropsFragmentViewModel : ViewModel() {
 
                     _isLoading.postValue(false)
                     _records.postValue(records)
-                    _min.postValue(min)
-                    _max.postValue(max)
-                    _avg.postValue(avg)
+                    _min.postValue(ceil( min))
+                    _max.postValue(ceil(max))
+                    _avg.postValue(ceil(avg))
                 }
             }
 

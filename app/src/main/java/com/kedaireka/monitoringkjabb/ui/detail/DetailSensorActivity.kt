@@ -291,7 +291,7 @@ class DetailSensorActivity : AppCompatActivity() {
 
         for (i in 0 until size) {
             if (records[size - i - 1].value != "null") {
-                val df = DateFormat.format("ha", records[size - i - 1].created_at.toDate())
+                val df = DateFormat.format("H:m", records[size - i - 1].created_at.toDate())
                 xValue.add(df.toString())
                 lineEntry.add(Entry(i.toFloat(), records[size - i - 1].value.toFloat()))
             }

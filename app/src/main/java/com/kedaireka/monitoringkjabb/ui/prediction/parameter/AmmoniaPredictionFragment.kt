@@ -76,13 +76,13 @@ class AmmoniaPredictionFragment : Fragment() {
 
         ammoniaFragmentViewModel.max.observe(viewLifecycleOwner) {
             max = it
-            val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
+            val value = "Max: ${String.format("%.2f", max)} ${sensor.unit} | Min: ${String.format("%.2f", min)} ${sensor.unit}"
             binding.tvMaxMin.text = value
         }
 
         ammoniaFragmentViewModel.min.observe(viewLifecycleOwner) {
             min = it
-            val value = "Max: $max ${sensor.unit} | Min: $min ${sensor.unit}"
+            val value = "Max: ${String.format("%.2f", max)} ${sensor.unit} | Min: ${String.format("%.2f", min)} ${sensor.unit}"
             binding.tvMaxMin.text = value
         }
 
@@ -217,7 +217,7 @@ class AmmoniaPredictionFragment : Fragment() {
         val size = records.size
 
         for (i in 0 until size) {
-            val df = DateFormat.format("ha", records[size - i - 1].created_at.toDate())
+            val df = DateFormat.format("H:m", records[size - i - 1].created_at.toDate())
 
             xValue.add(df.toString())
             lineEntry.add(Entry(i.toFloat(), records[size - i - 1].value.toFloat()))
