@@ -60,7 +60,7 @@ class ListSensorAdapter(
 
         holder.tvName.text = name
 
-        if (id == RAINDROPS_ID) {
+        if (id == "6") {
             holder.tvValue.text = holder.itemView.context.getString(RAINDROPS_DICT[value.toInt()]!!)
         } else {
             holder.tvValue.text = displayValue
