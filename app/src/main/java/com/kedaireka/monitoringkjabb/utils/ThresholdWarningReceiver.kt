@@ -59,8 +59,8 @@ class ThresholdWarningReceiver : BroadcastReceiver() {
     private fun showAlarmNotification(
         context: Context,
         notificationId: Int,
-        sensor: Sensor,
-        threshold: Map<String, Double>
+        sensor: Sensor = Sensor("5", "TDS", "267.12", "ppm", Timestamp(Date(Date().time))),
+        threshold: Map<String, Double> = hashMapOf("upper" to 6.0, "lower" to 9.0)
     ) {
         val CHANNEL_ID = "Channel_2"
         val CHANNEL_NAME = "Threshold Warning Notification"
@@ -90,7 +90,7 @@ class ThresholdWarningReceiver : BroadcastReceiver() {
             .setContentText(context.getString(R.string.threshold_notification_message))
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("${sensor.name} berada diluar batas aman dengan nilai saat ini ${sensor.value} ${sensor.unit}")
+                    .bigText("${sensor.name} berada diluar batas aman dengan nilai ${sensor.value}")
             )
             .setAutoCancel(true)
 
@@ -120,7 +120,8 @@ class ThresholdWarningReceiver : BroadcastReceiver() {
     }
 
     private fun getSensorsData(context: Context, notificationId: Int) {
-
+//
+//        showAlarmNotification(context, notificationId)
         Log.d("ThresholdWarning", "Fetching Data")
         val sensorModel = getSensorApi()
         val thresholdData = arrayListOf<Map<String, Double>>()
@@ -165,41 +166,5 @@ class ThresholdWarningReceiver : BroadcastReceiver() {
                 TODO("Not yet implemented")
             }
         })
-
-//        val databaseRef = DATABASE_REFERENCE
-//        databaseRef.child("sensors").get().addOnSuccessListener { result ->
-//            val sensorData = arrayListOf<Sensor>()
-//            val thresholdData = arrayListOf<Map<String, Double>>()
-//
-//            for (sensor in result.children) {
-//                val id = sensor.key!!
-//                val name = sensor.child("data/name").value.toString()
-//                val value = sensor.child("records").children.last().child("value").value.toString()
-//                val unit = sensor.child("data/unit").value.toString()
-//                val createdAt =
-//                    sensor.child("records").children.last().child("created_at").value.toString()
-//                val urlIcon = sensor.child("data/url_icon").value.toString()
-//
-//                val createdAtTimestamp = Timestamp(Date(createdAt.toLong() * 1000))
-//                sensorData.add(Sensor(id, name, value, unit, createdAtTimestamp, urlIcon))
-//
-//                val upper = sensor.child("thresholds/upper").value.toString().toDouble()
-//                val lower = sensor.child("thresholds/lower").value.toString().toDouble()
-//
-//                thresholdData.add(hashMapOf("upper" to upper, "lower" to lower))
-//            }
-//
-//            Log.d("ThresholdWarning", "${sensorData.size}")
-//
-//            for (i in sensorData.indices) {
-//                val upper = thresholdData[i]["upper"]!!
-//                val lower = thresholdData[i]["lower"]!!
-//                val value = sensorData[i].value.toDouble()
-//
-//                if (value !in lower..upper) {
-//                    showAlarmNotification(context, notificationId, sensorData[i], thresholdData[i])
-//                }
-//            }
-//        }
     }
 }

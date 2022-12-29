@@ -68,13 +68,13 @@ class SuhuPredictionFragment : Fragment() {
 
         waterTemperatureFragmentViewModel.max.observe(viewLifecycleOwner) {
             max = it
-            val value = "Max: $${String.format("%.2f", max)} ${sensor.unit} | Min: $${String.format("%.2f", min)} ${sensor.unit}"
+            val value = "Max: ${String.format("%.2f", max)} ${sensor.unit} | Min: ${String.format("%.2f", min)} ${sensor.unit}"
             binding.tvMaxMin.text = value
         }
 
         waterTemperatureFragmentViewModel.min.observe(viewLifecycleOwner) {
             min = it
-            val value = "Max: $${String.format("%.2f", max)} ${sensor.unit} | Min: $${String.format("%.2f", min)} ${sensor.unit}"
+            val value = "Max: ${String.format("%.2f", max)} ${sensor.unit} | Min: ${String.format("%.2f", min)} ${sensor.unit}"
             binding.tvMaxMin.text = value
         }
 

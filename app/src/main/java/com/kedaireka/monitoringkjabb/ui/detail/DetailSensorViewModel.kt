@@ -8,7 +8,6 @@ import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.model.SensorModel
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor

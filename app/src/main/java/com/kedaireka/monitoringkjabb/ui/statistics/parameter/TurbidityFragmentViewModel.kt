@@ -1,6 +1,5 @@
 package com.kedaireka.monitoringkjabb.ui.statistics.parameter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -125,7 +124,6 @@ class TurbidityFragmentViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<GraphData>, t: Throwable) {
-//                TODO("Not yet implemented")
             }
         })
     }

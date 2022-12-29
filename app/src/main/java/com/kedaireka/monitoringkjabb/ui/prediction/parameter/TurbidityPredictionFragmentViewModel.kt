@@ -64,7 +64,9 @@ fun getDORecord(sensor: Sensor) {
                 val unit = sensor.unit
 
                 for (data in arrayListSensorData) {
+//                    val value = data.turbidity.toDouble()*dataGrowthRate
                     val value = data.turbidity.toDouble()*dataGrowthRate
+
                     counter += value
                     if (min > value){
                         min = value
