@@ -1,17 +1,13 @@
 package com.kedaireka.monitoringkjabb.ui.statistics.parameter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.model.SensorModel
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor

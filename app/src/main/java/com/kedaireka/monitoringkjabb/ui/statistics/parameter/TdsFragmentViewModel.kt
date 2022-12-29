@@ -85,7 +85,6 @@ class TdsFragmentViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<GraphData>, t: Throwable) {
-                TODO("Not yet implemented")
             }
         })
     }
@@ -123,7 +122,6 @@ class TdsFragmentViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<GraphData>, t: Throwable) {
-                TODO("Not yet implemented")
             }
         })
     }

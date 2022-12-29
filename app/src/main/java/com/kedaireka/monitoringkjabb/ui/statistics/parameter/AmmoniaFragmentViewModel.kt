@@ -1,6 +1,5 @@
 package com.kedaireka.monitoringkjabb.ui.statistics.parameter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -54,7 +53,7 @@ class AmmoniaFragmentViewModel : ViewModel() {
                     val records = arrayListOf<Sensor>()
                     var counter = 0.0
                     val arrayListSensorData: ArrayList<SensorData> = ArrayList(it.graph.take(10))
-                    var tempVal = arrayListSensorData[0].amonia.toDouble()
+                    val tempVal = arrayListSensorData[0].amonia.toDouble()
                     var min = tempVal
                     var max = tempVal
                     val id = sensor.id
@@ -86,7 +85,6 @@ class AmmoniaFragmentViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<GraphData>, t: Throwable) {
-                TODO("Not yet implemented")
             }
         })
     }

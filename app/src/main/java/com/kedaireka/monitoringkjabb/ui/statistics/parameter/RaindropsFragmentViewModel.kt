@@ -89,7 +89,6 @@ class RaindropsFragmentViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<GraphData>, t: Throwable) {
-                TODO("Not yet implemented")
             }
         })
     }
