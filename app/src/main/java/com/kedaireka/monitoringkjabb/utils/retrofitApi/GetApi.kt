@@ -3,7 +3,6 @@ package com.kedaireka.monitoringkjabb.utils.retrofitApi
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.annotations.SerializedName
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.SensorData
 import com.kedaireka.monitoringkjabb.model.SensorModel
@@ -13,7 +12,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-
 
 interface Api {
     @GET("data")
@@ -40,7 +38,6 @@ object RetrofitClient {
 
 object RetrofitClientSensor {
     private const val BASE_URL = "https://monitoring.cemebsa.com/"
-
     val instance: ApiSensor by lazy {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -70,7 +67,6 @@ fun getDataApi() : LiveData<ArrayList<SensorData>> {
     })
     return dataResponse
 }
-
 fun getSensorApi() : ArrayList<SensorModel> {
     var dataResponse = ArrayList<SensorModel>()
     RetrofitClientSensor.instance.getPosts().enqueue(object : Callback<ArrayList<SensorModel>>{
@@ -86,8 +82,6 @@ fun getSensorApi() : ArrayList<SensorModel> {
     })
     return dataResponse
 }
-
-
 interface ApiSensorUpdate {
     @FormUrlEncoded
     @POST("api/data/sensoredit")
@@ -101,7 +95,6 @@ interface ApiSensorUpdate {
 }
 object RetrofitClientSensorUpdate {
     private const val BASE_URL = "https://monitoring.cemebsa.com/"
-
     val instance: ApiSensorUpdate by lazy {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)

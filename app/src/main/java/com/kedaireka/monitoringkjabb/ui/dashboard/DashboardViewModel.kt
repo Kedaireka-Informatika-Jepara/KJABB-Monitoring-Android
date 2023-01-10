@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
 import com.kedaireka.monitoringkjabb.model.SensorData
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.getSensorApi
@@ -35,8 +34,6 @@ class DashboardViewModel : ViewModel() {
         val sensorData = arrayListOf<Sensor>()
         val thresholdData = arrayListOf<Map<String, Double>>()
 
-        val refRealtimeDatabase = DATABASE_REFERENCE
-        refRealtimeDatabase.keepSynced(true)
 //        val graphData : GraphData
         val sensorModel = getSensorApi()
 

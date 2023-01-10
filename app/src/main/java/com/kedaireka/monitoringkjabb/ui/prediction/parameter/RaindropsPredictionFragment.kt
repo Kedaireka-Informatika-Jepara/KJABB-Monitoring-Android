@@ -33,16 +33,6 @@ import com.kedaireka.monitoringkjabb.utils.RaindropsMapper
 import java.util.*
 import java.util.concurrent.Executors
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RaindropsPredictionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RaindropsPredictionFragment : Fragment() {
     private lateinit var randropsFragmentViewModel: RaindropsPredictionFragmentViewModel
     private lateinit var recordsInRange: ArrayList<Sensor>

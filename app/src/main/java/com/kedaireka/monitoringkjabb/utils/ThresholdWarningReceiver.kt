@@ -15,15 +15,10 @@ import com.google.firebase.Timestamp
 import com.kedaireka.monitoringkjabb.R
 import com.kedaireka.monitoringkjabb.model.GraphData
 import com.kedaireka.monitoringkjabb.model.Sensor
-import com.kedaireka.monitoringkjabb.model.SensorData
-import com.kedaireka.monitoringkjabb.model.SensorModel
 import com.kedaireka.monitoringkjabb.ui.detail.DetailSensorActivity
-import com.kedaireka.monitoringkjabb.utils.FirebaseDatabase.Companion.DATABASE_REFERENCE
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.ApiSensorData
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClient
-import com.kedaireka.monitoringkjabb.utils.retrofitApi.RetrofitClientSensor
 import com.kedaireka.monitoringkjabb.utils.retrofitApi.getSensorApi
-import org.apache.poi.ss.util.DateFormatConverter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
